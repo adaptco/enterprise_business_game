@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.30.0
+pydantic==2.7.0
+requests==2.32.0
+jsonschema==4.22.0
+py-cid>=0.3.0
+pycryptodome>=3.19.0
+cbor2>=5.5.0
+urllib3>=2.0.0

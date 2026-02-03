@@ -1,0 +1,80 @@
+# PPO Training Configuration for Racing AI
+# Compatible with Unity ML-Agents Toolkit
+#
+# Launch: mlagents-learn ml/configs/ppo_car.yaml --run-id=racing-v1 --num-envs=16
+#
+# Observation Space: 12 continuous floats (see CarAgent.cs)
+# Action Space: 2 continuous [-1, 1] (throttle, steer)
+
+behaviors:
+  CarAgent:
+    trainer_type: ppo
+
+    hyperparameters:
+      batch_size: 4096
+      buffer_size: 40960
+      learning_rate: 3.0e-4
+      learning_rate_schedule: linear
+      beta: 5.0e-3 # Entropy regularization
+      epsilon: 0.2 # PPO clipping
+      lambd: 0.95 # GAE lambda
+      num_epoch: 3
+
+    network_settings:
+      normalize: true
+      hidden_units: 512
+      num_layers: 3
+      vis_encode_type: simple
+      memory: null # No LSTM for racing (fast reactions)
+
+    reward_signals:
+      # Primary reward: extrinsic from environment
+      extrinsic:
+        gamma: 0.995 # High gamma for long-term racing strategy
+        strength: 1.0
+
+      # Curiosity for exploration (helps discover racing lines)
+      curiosity:
+        gamma: 0.99
+        strength: 0.02
+        encoding_size: 256
+        learning_rate: 3.0e-4
+
+    # Training parameters
+    max_steps: 10000000 # 10M steps for convergence
+    time_horizon: 1000 # ~30s of racing per trajectory
+    summary_freq: 10000
+
+    # Behavioral cloning from expert demonstrations (optional)
+    behavioral_cloning:
+      demo_path: null # Set to path of recorded demos
+      strength: 0.5
+      steps: 150000
+      batch_size: 512
+
+    # Self-play for multi-agent racing (optional)
+    self_play:
+      save_steps: 50000
+      team_change: 100000
+      swap_steps: 2000
+      window: 10
+      play_against_latest_model_ratio: 0.5
+      initial_elo: 1200.0
+
+# Environment settings
+env_settings:
+  env_path: null # Set to Unity build path
+  env_args: null
+  base_port: 5005
+  num_envs: 16 # Parallel environments
+  seed: -1 # Random seed (-1 = random)
+
+# Checkpoint settings
+checkpoint_settings:
+  run_id: racing-v1
+  initialize_from: null
+  load_model: false
+  resume: false
+  force: false
+  train_model: true
+  inference: false

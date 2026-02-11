@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://enterprise-business-game.local/schemas/sim_telemetry.v1.schema.json",
+    "title": "SimTelemetry.v1",
+    "description": "Canonical webhook payload for vehicle simulation telemetry — Zapier/Canvas compatible",
+    "type": "object",
+    "required": [
+        "schema_version",
+        "run_id",
+        "vehicle_id",
+        "tick",
+        "timestamp_ms",
+        "speed_mps",
+        "accel_mps2"
+    ],
+    "properties": {
+        "schema_version": {
+            "type": "string",
+            "const": "sim.telemetry.v1",
+            "description": "Schema version for forward compatibility and audit"
+        },
+        "run_id": {
+            "type": "string",
+            "description": "Groups all ticks from a simulation run",
+            "pattern": "^sim_[a-zA-Z0-9_]+$"
+        },
+        "vehicle_id": {
+            "type": "string",
+            "description": "Unique vehicle identifier (supports multi-vehicle runs)",
+            "pattern": "^car_[0-9]+$"
+        },
+        "tick": {
+            "type": "integer",
+            "description": "Deterministic simulation step number",
+            "minimum": 0
+        },
+        "timestamp_ms": {
+            "type": "integer",
+            "description": "Wall-clock timestamp in milliseconds (Unix epoch)",
+            "minimum": 0
+        },
+        "speed_mps": {
+            "type": "number",
+            "description": "Vehicle speed in meters per second",
+            "minimum": 0
+        },
+        "accel_mps2": {
+            "type": "number",
+            "description": "Acceleration in m/s² (primary classification signal for thresholds)"
+        },
+        "position_lat": {
+            "type": "number",
+            "description": "Latitude (optional, for mapping/clustering)",
+            "minimum": -90,
+            "maximum": 90
+        },
+        "position_lon": {
+            "type": "number",
+            "description": "Longitude (optional, for mapping/clustering)",
+            "minimum": -180,
+            "maximum": 180
+        },
+        "heading_deg": {
+            "type": "number",
+            "description": "Heading in degrees (0-360, optional)",
+            "minimum": 0,
+            "maximum": 360
+        },
+        "g_force": {
+            "type": "number",
+            "description": "G-force (optional, derived from accel_mps2 / 9.81)"
+        },
+        "road_grade_pct": {
+            "type": "number",
+            "description": "Road grade percentage (optional, future extension)"
+        },
+        "surface": {
+            "type": "string",
+            "description": "Road surface type (optional, future extension)",
+            "enum": [
+                "dry",
+                "wet",
+                "ice",
+                "gravel"
+            ]
+        },
+        "mode": {
+            "type": "string",
+            "description": "Vehicle mode (optional, future extension)",
+            "enum": [
+                "eco",
+                "comfort",
+                "sport",
+                "race"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

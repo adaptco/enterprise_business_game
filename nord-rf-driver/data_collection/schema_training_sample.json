@@ -1,0 +1,116 @@
+{
+    "description": "Training sample schema for Nürburgring RF driver",
+    "version": "v1.0",
+    "fields": [
+        {
+            "name": "session_id",
+            "type": "string",
+            "description": "Unique session identifier"
+        },
+        {
+            "name": "lap_id",
+            "type": "int",
+            "description": "Lap number within session"
+        },
+        {
+            "name": "timestep",
+            "type": "int",
+            "description": "Monotonic timestep within lap (0-indexed)"
+        },
+        {
+            "name": "timestamp_ms",
+            "type": "int",
+            "description": "Wall-clock timestamp in milliseconds (optional)"
+        },
+        {
+            "name": "speed_mps",
+            "type": "float",
+            "description": "Vehicle speed in m/s"
+        },
+        {
+            "name": "yaw_rate_rad_s",
+            "type": "float",
+            "description": "Yaw rate in rad/s"
+        },
+        {
+            "name": "steering_angle_rad",
+            "type": "float",
+            "description": "Current steering angle in radians"
+        },
+        {
+            "name": "throttle_input",
+            "type": "float",
+            "description": "Current throttle input (0.0-1.0)"
+        },
+        {
+            "name": "brake_input",
+            "type": "float",
+            "description": "Current brake input (0.0-1.0)"
+        },
+        {
+            "name": "track_progress_m",
+            "type": "float",
+            "description": "Distance along centerline in meters"
+        },
+        {
+            "name": "distance_to_center_m",
+            "type": "float",
+            "description": "Signed distance to centerline (+ right, - left)"
+        },
+        {
+            "name": "curvature_now_1pm",
+            "type": "float",
+            "description": "Current track curvature (1/m)"
+        },
+        {
+            "name": "curvature_10m_ahead_1pm",
+            "type": "float",
+            "description": "Track curvature 10m ahead (1/m)"
+        },
+        {
+            "name": "curvature_30m_ahead_1pm",
+            "type": "float",
+            "description": "Track curvature 30m ahead (1/m)"
+        },
+        {
+            "name": "grad_now",
+            "type": "float",
+            "description": "Current track gradient in radians"
+        },
+        {
+            "name": "dist_left_edge_m",
+            "type": "float",
+            "description": "Distance to left track edge in meters"
+        },
+        {
+            "name": "dist_right_edge_m",
+            "type": "float",
+            "description": "Distance to right track edge in meters"
+        },
+        {
+            "name": "steering_command",
+            "type": "float",
+            "description": "Expert steering command (-1.0 to 1.0)"
+        },
+        {
+            "name": "throttle_command",
+            "type": "float",
+            "description": "Expert throttle command (0.0-1.0)"
+        },
+        {
+            "name": "brake_command",
+            "type": "float",
+            "description": "Expert brake command (0.0-1.0)"
+        },
+        {
+            "name": "valid",
+            "type": "bool",
+            "description": "Whether sample is valid for training"
+        },
+        {
+            "name": "event",
+            "type": "string",
+            "description": "Event flag: '' | 'offtrack' | 'spin' | 'crash'"
+        }
+    ]
+}

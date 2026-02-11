@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # SSOT API (audit trail backend)
+  ssot-api:
+    build:
+      context: ../ssot-integration
+      dockerfile: Dockerfile
+    container_name: ssot-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ssot-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Enterprise Business Game API
+  game-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game-api
+    ports:
+      - "8001:8001"
+    volumes:
+      - game-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SSOT_API_URL=http://ssot-api:8000
+    depends_on:
+      ssot-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Master Agent (self-tuning orchestrator)
+  master-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.master
+    container_name: master-agent
+    volumes:
+      - game-data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GAME_API_URL=http://game-api:8001
+      - SSOT_API_URL=http://ssot-api:8000
+      - TICK_INTERVAL_SECONDS=5
+      - AUTO_SPAWN_AI=true
+      - NUM_AI_COMPANIES=3
+    depends_on:
+      game-api:
+        condition: service_healthy
+      ssot-api:
+        condition: service_healthy
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Nginx reverse proxy (optional, for production)
+  nginx:
+    image: nginx:alpine
+    container_name: game-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - game-api
+      - ssot-api
+    networks:
+      - game-network
+    restart: unless-stopped
+
+volumes:
+  ssot-data:
+    driver: local
+  game-data:
+    driver: local
+
+networks:
+  game-network:
+    driver: bridge

@@ -1,0 +1,9 @@
+{
+    "input_digest": "sha256:1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+    "model": "sovereign-kernel-v3",
+    "operator": "earl",
+    "output_digest": "sha256:aaaabbbbccccddddeeeeffff1111222233334444555566667777888899990000",
+    "run_id": "run-2026-01-20-001",
+    "schema_version": "InferenceReceipt.v1",
+    "ts": "2026-01-20T20:40:00Z"
+}

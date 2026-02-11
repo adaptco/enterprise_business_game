@@ -1,0 +1,1 @@
+{"anchor_hash":"","anchor_id":"","artifact_kind":"InferenceReceipt.v1","payload_hash":"9f5b4a8f0c3b2a1d0e9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a493827160f0e1d2c","schema_version":"VaultFossilizationReceipt.v1","sealed":false,"ts":"2026-01-20T20:40:06Z","vault_fingerprint":"7c6f5e4d3c2b1a0f9e8d7c6b5a493827160f0e1d2c3b4a5968776655443322110"}

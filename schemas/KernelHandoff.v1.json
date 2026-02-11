@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/schemas/KernelHandoff.v1.json",
+    "title": "KernelHandoff.v1",
+    "description": "Schema for handing off kernel to other agents within their domain of emergence.",
+    "type": "object",
+    "properties": {
+        "transformer_trigger": {
+            "type": "string",
+            "description": "Trigger identifier for the downstream transformer."
+        },
+        "embedding_vector": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "description": "Vector representation of the agent token."
+        },
+        "agent_domain": {
+            "type": "string",
+            "description": "Domain of emergence where this agent operates."
+        }
+    },
+    "required": [
+        "transformer_trigger",
+        "embedding_vector",
+        "agent_domain"
+    ]
+}

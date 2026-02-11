@@ -1,0 +1,20 @@
+%YAML 1.2
+---
+schema: eigenstate_tensor.v1
+tick_id: 1768678324024
+eigenstate: E3_Q_ACTIVE
+phase_vector:
+  - 8 # requestRate
+  - 7 # tokenBurnRate
+  - 6 # queueDepth
+  - 1 # billingPosture (WARN)
+  - 0 # creditPosture (OK)
+  - 2 # riskPosture (BLOCKED)
+  - 2 # alertFlags.length
+  - 1 # pendingDecisions.length
+  - 2 # recentCausalEvents.length
+  - 1 # unresolvedConsequences.length
+coherence: 0.998005
+effect_id: EFF_SMS_BRIDGE_STABLE_01
+oracle_attestation: Nova-1
+anchor_coordinates: [0, 0, 0]

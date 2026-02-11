@@ -1,0 +1,164 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Unified Tensor Runtime Block V1",
+    "description": "Encapsulated runtime configuration block with semantic tensor embedding for deterministic execution environments",
+    "type": "object",
+    "required": [
+        "block_id",
+        "schema_version",
+        "timestamp",
+        "tensor_semantic",
+        "runtime_config",
+        "integrity_hash",
+        "prev_block_hash"
+    ],
+    "properties": {
+        "block_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this runtime block"
+        },
+        "schema_version": {
+            "type": "string",
+            "pattern": "^tensor\\.runtime\\.v[0-9]+$",
+            "description": "Schema version identifier (e.g., tensor.runtime.v1)"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of block creation"
+        },
+        "tensor_semantic": {
+            "type": "object",
+            "required": [
+                "embedding_space",
+                "coordinates",
+                "manifold_type"
+            ],
+            "properties": {
+                "embedding_space": {
+                    "type": "string",
+                    "description": "Semantic space identifier (e.g., 'cici.v1', 'vehicle.state.v1')"
+                },
+                "coordinates": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "description": "High-dimensional tensor coordinates"
+                },
+                "manifold_type": {
+                    "type": "string",
+                    "enum": [
+                        "EUCLIDEAN",
+                        "SE3",
+                        "PINN",
+                        "CUSTOM"
+                    ],
+                    "description": "Geometric manifold type for the embedding"
+                },
+                "dimension": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Dimensionality of the tensor space"
+                }
+            },
+            "description": "Semantic tensor embedding for this runtime configuration"
+        },
+        "runtime_config": {
+            "type": "object",
+            "required": [
+                "config_source",
+                "normalized_params"
+            ],
+            "properties": {
+                "config_source": {
+                    "type": "string",
+                    "enum": [
+                        "IPFS",
+                        "LOCAL",
+                        "REGISTRY",
+                        "EXTERNAL"
+                    ],
+                    "description": "Source of the configuration data"
+                },
+                "ipfs_cid": {
+                    "type": "string",
+                    "pattern": "^(Qm|bafybei|bafy)[a-zA-Z0-9]{44,}$",
+                    "description": "IPFS Content Identifier if source is IPFS"
+                },
+                "normalized_params": {
+                    "type": "object",
+                    "description": "Normalized runtime parameters (structure depends on runtime type)",
+                    "additionalProperties": true
+                },
+                "raw_config": {
+                    "type": "object",
+                    "description": "Original configuration (optional, for audit trail)",
+                    "additionalProperties": true
+                }
+            },
+            "description": "Runtime configuration data with source tracking"
+        },
+        "capsule_bindings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "capsule_id",
+                    "capsule_type",
+                    "binding_hash"
+                ],
+                "properties": {
+                    "capsule_id": {
+                        "type": "string"
+                    },
+                    "capsule_type": {
+                        "type": "string",
+                        "description": "Type of capsule (e.g., 'sovereign_state', 'company_registration')"
+                    },
+                    "binding_hash": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$",
+                        "description": "SHA-256 hash of the capsule at binding time"
+                    }
+                }
+            },
+            "description": "Bound capsules that this runtime block depends on"
+        },
+        "integrity_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of (tensor_semantic + runtime_config + capsule_bindings)"
+        },
+        "prev_block_hash": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of previous runtime block (Merkle link, null for genesis)"
+        },
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "creator": {
+                    "type": "string",
+                    "description": "Entity that created this runtime block"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Purpose or description of this runtime"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Searchable tags for indexing"
+                }
+            },
+            "description": "Optional metadata"
+        }
+    }
+}

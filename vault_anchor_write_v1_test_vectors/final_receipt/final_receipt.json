@@ -1,0 +1,12 @@
+{
+    "anchor_id": "f7b9c2d4-1e3a-4b5c-8d9e-001122334455",
+    "artifact_kind": "InferenceReceipt.v1",
+    "payload_hash": "6a47c1eee539c79b6ed05d4766d01831099c4043dab1431aa3a9b82018b80e7b",
+    "schema_version": "VaultFossilizationReceipt.v1",
+    "ts": "2026-01-20T20:40:06Z",
+    "vault_fingerprint": "7c6f5e4d3c2b1a0f9e8d7c6b5a493827160f0e1d2c3b4a5968776655443322110",
+    "anchor_hash": "7d0ebcfa11bcce14acca57c7b0abd9b86d807bd42431b3d47ff340caa621df72",
+    "vault_public_key": "75da054fc8e0bbc0079094670f2874d17c97a05c9cbf245c723703b3ea9ff567",
+    "signature": "fd3899f8bdfb592ea13f1384fcbab2a837c90c6c87546b8c2245ec79e75b9b972bbfac90547ed93921b567d9b8d399e12afe762a14a8385a38b03b7a22b2350f",
+    "sealed": true
+}

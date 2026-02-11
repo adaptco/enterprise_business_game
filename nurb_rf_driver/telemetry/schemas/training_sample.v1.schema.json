@@ -1,0 +1,141 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Training Sample V1",
+    "description": "Single training sample logged per tick in NDJSON format",
+    "version": "1.0.0",
+    "type": "object",
+    "required": [
+        "tick",
+        "timestamp_ms",
+        "lap_id",
+        "valid",
+        "features",
+        "targets"
+    ],
+    "properties": {
+        "tick": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Simulation tick number"
+        },
+        "timestamp_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Elapsed time in milliseconds"
+        },
+        "lap_id": {
+            "type": "string",
+            "description": "Unique lap identifier (run_id + lap_number)"
+        },
+        "valid": {
+            "type": "boolean",
+            "description": "Whether this sample is valid for training (false if off-track, crashed, etc.)"
+        },
+        "features": {
+            "type": "object",
+            "required": [
+                "speed_mps",
+                "yaw_rate_rps",
+                "steering_angle_norm",
+                "track_progress",
+                "dist_to_centerline_m",
+                "heading_error_rad",
+                "curvature_now",
+                "curvature_ahead_10m",
+                "curvature_ahead_30m",
+                "curvature_ahead_60m"
+            ],
+            "properties": {
+                "speed_mps": {
+                    "type": "number"
+                },
+                "yaw_rate_rps": {
+                    "type": "number"
+                },
+                "steering_angle_norm": {
+                    "type": "number"
+                },
+                "track_progress": {
+                    "type": "number"
+                },
+                "dist_to_centerline_m": {
+                    "type": "number"
+                },
+                "heading_error_rad": {
+                    "type": "number"
+                },
+                "curvature_now": {
+                    "type": "number"
+                },
+                "curvature_ahead_10m": {
+                    "type": "number"
+                },
+                "curvature_ahead_30m": {
+                    "type": "number"
+                },
+                "curvature_ahead_60m": {
+                    "type": "number"
+                }
+            },
+            "description": "Feature vector following feature_config.v1.json canonical order"
+        },
+        "targets": {
+            "type": "object",
+            "required": [
+                "steering_command",
+                "throttle_command",
+                "brake_command"
+            ],
+            "properties": {
+                "steering_command": {
+                    "type": "number",
+                    "minimum": -1.0,
+                    "maximum": 1.0,
+                    "description": "Steering command normalized to [-1, 1]"
+                },
+                "throttle_command": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Throttle command normalized to [0, 1]"
+                },
+                "brake_command": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Brake command normalized to [0, 1]"
+                }
+            },
+            "description": "Control targets for supervised learning"
+        },
+        "meta": {
+            "type": "object",
+            "properties": {
+                "coord_int": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "description": "Integer coordinate [x, y, z]"
+                },
+                "seed_u64": {
+                    "type": "integer",
+                    "description": "Deterministic seed for this tick"
+                },
+                "state_hash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$",
+                    "description": "SHA256 hash of state tensor"
+                },
+                "chain_hash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$",
+                    "description": "Chained hash for replay verification"
+                }
+            },
+            "description": "Optional metadata for determinism and replay"
+        }
+    }
+}

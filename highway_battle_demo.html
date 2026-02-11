@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highway Battle System - Interactive Demo</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff00aa;
+            --accent-gold: #ffd700;
+            --text-primary: #ffffff;
+            --text-secondary: #8888aa;
+            --sp-player: #00ff88;
+            --sp-rival: #ff4466;
+            --danger: #ff2244;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Track Visualization */
+        .track-view {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .track-header h2 {
+            color: var(--accent-cyan);
+            font-size: 1.2rem;
+        }
+
+        .battle-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .battle-status.idle {
+            background: rgba(136, 136, 170, 0.3);
+            color: var(--text-secondary);
+        }
+
+        .battle-status.countdown {
+            background: rgba(255, 215, 0, 0.3);
+            color: var(--accent-gold);
+        }
+
+        .battle-status.active {
+            background: rgba(255, 0, 170, 0.3);
+            color: var(--accent-magenta);
+        }
+
+        .battle-status.victory {
+            background: rgba(0, 255, 136, 0.3);
+            color: var(--sp-player);
+        }
+
+        .battle-status.defeat {
+            background: rgba(255, 34, 68, 0.3);
+            color: var(--danger);
+        }
+
+        #trackCanvas {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* SP Bars */
+        .sp-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .sp-bar-wrapper {
+            flex: 1;
+        }
+
+        .sp-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .sp-bar {
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sp-fill {
+            height: 100%;
+            transition: width 0.1s ease-out;
+            border-radius: 12px;
+        }
+
+        .sp-fill.player {
+            background: linear-gradient(90deg, #00cc66, var(--sp-player));
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .sp-fill.rival {
+            background: linear-gradient(90deg, #cc0033, var(--sp-rival));
+            box-shadow: 0 0 20px rgba(255, 68, 102, 0.5);
+        }
+
+        .sp-fill.critical {
+            animation: pulse-critical 0.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-critical {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-panel h2 {
+            color: var(--accent-cyan);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .stat-value.highlight {
+            color: var(--accent-gold);
+        }
+
+        /* Rival Info */
+        .rival-card {
+            background: linear-gradient(135deg, rgba(255, 0, 170, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 0, 170, 0.3);
+        }
+
+        .rival-name {
+            font-weight: 700;
+            color: var(--accent-magenta);
+            margin-bottom: 5px;
+        }
+
+        .rival-team {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .rival-tier {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .tier-wanderer {
+            background: rgba(136, 136, 170, 0.3);
+            color: var(--text-secondary);
+        }
+
+        .tier-boss {
+            background: rgba(255, 215, 0, 0.3);
+            color: var(--accent-gold);
+        }
+
+        .tier-leader {
+            background: rgba(255, 0, 170, 0.3);
+            color: var(--accent-magenta);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #0099cc);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-magenta), #cc0066);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Event Log */
+        .event-log {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .event-log h3 {
+            color: var(--accent-cyan);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .log-entry {
+            font-size: 0.85rem;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: 'Consolas', monospace;
+        }
+
+        .log-entry .time {
+            color: var(--text-secondary);
+            margin-right: 10px;
+        }
+
+        .log-entry.victory {
+            color: var(--sp-player);
+        }
+
+        .log-entry.defeat {
+            color: var(--danger);
+        }
+
+        .log-entry.critical {
+            color: var(--accent-gold);
+        }
+
+        /* Flash animation */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s;
+        }
+
+        .flash-overlay.active {
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <header>
+        <h1>🏎️ Highway Battle System</h1>
+        <p class="subtitle">Tokyo Extreme Racer–Style SP Battle Demo</p>
+    </header>
+
+    <div class="container">
+        <div class="game-container">
+            <div class="track-view">
+                <div class="track-header">
+                    <h2>📍 Highway View</h2>
+                    <span class="battle-status idle" id="battleStatus">FREE ROAM</span>
+                </div>
+                <canvas id="trackCanvas"></canvas>
+
+                <div class="sp-container" id="spContainer" style="display: none;">
+                    <div class="sp-bar-wrapper">
+                        <div class="sp-label">
+                            <span>YOU</span>
+                            <span id="playerSpText">100%</span>
+                        </div>
+                        <div class="sp-bar">
+                            <div class="sp-fill player" id="playerSpBar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="sp-bar-wrapper">
+                        <div class="sp-label">
+                            <span id="rivalNameLabel">RIVAL</span>
+                            <span id="rivalSpText">100%</span>
+                        </div>
+                        <div class="sp-bar">
+                            <div class="sp-fill rival" id="rivalSpBar" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn-primary" id="btnFlash" onclick="flashHeadlights()">
+                        💡 Flash Headlights
+                    </button>
+                    <button class="btn-danger" id="btnBoost" onclick="activateBoost()">
+                        🚀 Boost
+                    </button>
+                    <button class="btn-secondary" onclick="resetDemo()">
+                        🔄 Reset Demo
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <h2>📊 Battle Stats</h2>
+
+                <div class="rival-card" id="rivalCard" style="display: none;">
+                    <div class="rival-name" id="rivalDisplayName">---</div>
+                    <div class="rival-team" id="rivalTeam">---</div>
+                    <span class="rival-tier tier-wanderer" id="rivalTierBadge">WANDERER</span>
+                </div>
+
+                <div class="stat-row">
+                    <span class="stat-label">Gap</span>
+                    <span class="stat-value" id="gapValue">0.0m</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Your Speed</span>
+                    <span class="stat-value" id="playerSpeed">0 km/h</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rival Speed</span>
+                    <span class="stat-value" id="rivalSpeed">0 km/h</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Battle Time</span>
+                    <span class="stat-value highlight" id="battleTime">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">SP Drain Rate</span>
+                    <span class="stat-value" id="drainRate">0.00/s</span>
+                </div>
+
+                <h2 style="margin-top: 20px;">🏆 Session</h2>
+                <div class="stat-row">
+                    <span class="stat-label">Victories</span>
+                    <span class="stat-value highlight" id="victories">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Defeats</span>
+                    <span class="stat-value" id="defeats">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rep Earned</span>
+                    <span class="stat-value highlight" id="repEarned">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-log">
+            <h3>📜 Event Log</h3>
+            <div id="logContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // HIGHWAY BATTLE SYSTEM - BROWSER DEMO
+        // Tokyo Extreme Racer–Style SP Battle
+        // ============================================
+
+        // SP System Configuration (matches Python kernel)
+        const SP_CONFIG = {
+            baseDrainPerSecond: 0.03,
+            gapMultiplier: 0.002,
+            speedMultiplier: 0.008,
+            escalationRate: 0.0002,
+            minDrainPerTick: 0.0001,
+            maxDrainPerTick: 0.01,
+            criticalThreshold: 0.25,
+            tickRateHz: 60
+        };
+
+        // Battle phases
+        const PHASE = {
+            IDLE: 'idle',
+            COUNTDOWN: 'countdown',
+            ACTIVE: 'active',
+            VICTORY: 'victory',
+            DEFEAT: 'defeat'
+        };
+
+        // Rival definitions
+        const RIVALS = [
+            { id: 'wanderer_001', name: 'Night Drifter', team: null, tier: 'WANDERER', spPool: 0.8, skill: 0.4, color: '#666' },
+            { id: 'wanderer_002', name: 'Speed Demon', team: null, tier: 'WANDERER', spPool: 0.85, skill: 0.45, color: '#555' },
+            { id: 'boss_001', name: 'Karussell King', team: 'Ring Masters', tier: 'BOSS', spPool: 1.2, skill: 0.7, color: '#c00' },
+            { id: 'leader_001', name: 'Shadow Ace', team: 'Midnight Runners', tier: 'TEAM_LEADER', spPool: 1.5, skill: 0.9, color: '#000' }
+        ];
+
+        // Game state
+        let state = {
+            phase: PHASE.IDLE,
+            tick: 0,
+            battleStartTick: 0,
+            countdownTicks: 0,
+
+            // Player
+            playerProgress: 0,
+            playerSpeed: 45,
+            playerSP: 1.0,
+            playerBoostActive: false,
+            playerBoostCooldown: 0,
+
+            // Rival
+            rival: null,
+            rivalProgress: 0,
+            rivalSpeed: 42,
+            rivalSP: 1.0,
+
+            // Session stats
+            victories: 0,
+            defeats: 0,
+            repEarned: 0
+        };
+
+        // Canvas setup
+        const canvas = document.getElementById('trackCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Log helper
+        function log(message, type = '') {
+            const logContent = document.getElementById('logContent');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `<span class="time">${time}</span>${message}`;
+            logContent.insertBefore(entry, logContent.firstChild);
+
+            // Keep last 50 entries
+            while (logContent.children.length > 50) {
+                logContent.removeChild(logContent.lastChild);
+            }
+        }
+
+        // Spawn a random rival
+        function spawnRival() {
+            const tier = Math.random() < 0.7 ? 'WANDERER' : (Math.random() < 0.8 ? 'BOSS' : 'TEAM_LEADER');
+            const pool = RIVALS.filter(r => r.tier === tier);
+            state.rival = pool[Math.floor(Math.random() * pool.length)];
+            state.rivalProgress = state.playerProgress + 50 + Math.random() * 30;
+            state.rivalSpeed = 38 + Math.random() * 10;
+            state.rivalSP = state.rival.spPool;
+
+            updateRivalCard();
+            log(`⚡ Rival spotted: ${state.rival.name}`, 'critical');
+        }
+
+        function updateRivalCard() {
+            const card = document.getElementById('rivalCard');
+            if (state.rival) {
+                card.style.display = 'block';
+                document.getElementById('rivalDisplayName').textContent = state.rival.name;
+                document.getElementById('rivalTeam').textContent = state.rival.team || 'Solo Racer';
+                document.getElementById('rivalNameLabel').textContent = state.rival.name.toUpperCase();
+
+                const badge = document.getElementById('rivalTierBadge');
+                badge.textContent = state.rival.tier.replace('_', ' ');
+                badge.className = 'rival-tier tier-' + state.rival.tier.toLowerCase().replace('_', '-').replace('team-leader', 'leader');
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        // Flash headlights to challenge
+        function flashHeadlights() {
+            if (state.phase !== PHASE.IDLE || !state.rival) return;
+
+            // Visual flash
+            const overlay = document.getElementById('flashOverlay');
+            overlay.classList.add('active');
+            setTimeout(() => overlay.classList.remove('active'), 100);
+
+            // Check lock envelope
+            const gap = Math.abs(state.rivalProgress - state.playerProgress);
+            if (gap > 100) {
+                log('❌ Too far for challenge (gap > 100m)');
+                return;
+            }
+
+            if (state.playerSpeed < 20) {
+                log('❌ Too slow for challenge (speed < 72 km/h)');
+                return;
+            }
+
+            // Start countdown
+            state.phase = PHASE.COUNTDOWN;
+            state.countdownTicks = 180; // 3 seconds
+            updateBattleStatus();
+            log('🏁 Challenge accepted! Get ready...', 'critical');
+        }
+
+        // Activate boost
+        function activateBoost() {
+            if (state.playerBoostCooldown > 0) return;
+
+            state.playerBoostActive = true;
+            state.playerBoostCooldown = 600; // 10 seconds
+            state.playerSpeed += 15;
+
+            log('🚀 BOOST ACTIVATED!');
+
+            setTimeout(() => {
+                state.playerBoostActive = false;
+                state.playerSpeed -= 15;
+            }, 3000);
+        }
+
+        // SP drain calculation (matches Python kernel)
+        function computeDrain(gapMeters, speedDiff, durationSeconds) {
+            const cfg = SP_CONFIG;
+            const tickFactor = 1.0 / cfg.tickRateHz;
+
+            const baseDrain = cfg.baseDrainPerSecond * tickFactor;
+            const gapDrain = gapMeters * cfg.gapMultiplier * tickFactor;
+            const speedDrain = Math.max(0, speedDiff) * cfg.speedMultiplier * tickFactor;
+            const escalation = 1.0 + (durationSeconds * cfg.escalationRate);
+
+            const total = (baseDrain + gapDrain + speedDrain) * escalation;
+            return Math.max(cfg.minDrainPerTick, Math.min(cfg.maxDrainPerTick, total));
+        }
+
+        // Update battle status badge
+        function updateBattleStatus() {
+            const badge = document.getElementById('battleStatus');
+            const texts = {
+                [PHASE.IDLE]: 'FREE ROAM',
+                [PHASE.COUNTDOWN]: 'GET READY!',
+                [PHASE.ACTIVE]: 'BATTLE!',
+                [PHASE.VICTORY]: 'VICTORY!',
+                [PHASE.DEFEAT]: 'DEFEAT!'
+            };
+            badge.textContent = texts[state.phase];
+            badge.className = 'battle-status ' + state.phase;
+        }
+
+        // Update SP bar UI
+        function updateSPBars() {
+            const container = document.getElementById('spContainer');
+            container.style.display = state.phase !== PHASE.IDLE ? 'flex' : 'none';
+
+            const playerBar = document.getElementById('playerSpBar');
+            const rivalBar = document.getElementById('rivalSpBar');
+
+            const playerPct = Math.max(0, state.playerSP * 100);
+            const rivalPct = Math.max(0, state.rivalSP / state.rival.spPool * 100);
+
+            playerBar.style.width = playerPct + '%';
+            rivalBar.style.width = rivalPct + '%';
+
+            playerBar.classList.toggle('critical', state.playerSP < SP_CONFIG.criticalThreshold);
+            rivalBar.classList.toggle('critical', state.rivalSP < SP_CONFIG.criticalThreshold * state.rival.spPool);
+
+            document.getElementById('playerSpText').textContent = Math.round(playerPct) + '%';
+            document.getElementById('rivalSpText').textContent = Math.round(rivalPct) + '%';
+        }
+
+        // Update stats panel
+        function updateStats() {
+            const gap = state.rivalProgress - state.playerProgress;
+            document.getElementById('gapValue').textContent = gap.toFixed(1) + 'm';
+            document.getElementById('playerSpeed').textContent = Math.round(state.playerSpeed * 3.6) + ' km/h';
+            document.getElementById('rivalSpeed').textContent = Math.round(state.rivalSpeed * 3.6) + ' km/h';
+
+            if (state.phase === PHASE.ACTIVE) {
+                const battleTime = (state.tick - state.battleStartTick) / 60;
+                document.getElementById('battleTime').textContent = battleTime.toFixed(1) + 's';
+
+                const drainPerSec = computeDrain(Math.abs(gap), Math.abs(state.playerSpeed - state.rivalSpeed), battleTime) * 60;
+                document.getElementById('drainRate').textContent = drainPerSec.toFixed(3) + '/s';
+            } else {
+                document.getElementById('battleTime').textContent = '--';
+                document.getElementById('drainRate').textContent = '--';
+            }
+
+            document.getElementById('victories').textContent = state.victories;
+            document.getElementById('defeats').textContent = state.defeats;
+            document.getElementById('repEarned').textContent = state.repEarned;
+        }
+
+        // Draw track visualization
+        function drawTrack() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw road
+            ctx.fillStyle = '#2a2a3a';
+            ctx.fillRect(0, h * 0.3, w, h * 0.4);
+
+            // Draw lanes
+            ctx.strokeStyle = '#444';
+            ctx.setLineDash([20, 20]);
+            ctx.lineWidth = 2;
+            for (let i = 1; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, h * 0.3 + (h * 0.4 / 3) * i);
+                ctx.lineTo(w, h * 0.3 + (h * 0.4 / 3) * i);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+
+            // Draw edge lines
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, h * 0.3);
+            ctx.lineTo(w, h * 0.3);
+            ctx.moveTo(0, h * 0.7);
+            ctx.lineTo(w, h * 0.7);
+            ctx.stroke();
+
+            // Calculate positions (player is always centered)
+            const centerX = w * 0.3;
+            const gap = state.rival ? state.rivalProgress - state.playerProgress : 0;
+            const rivalX = centerX + gap * 3; // Scale for visibility
+
+            // Draw player car
+            drawCar(centerX, h * 0.5, '#00d4ff', 'YOU', state.playerBoostActive);
+
+            // Draw rival car
+            if (state.rival && rivalX > -50 && rivalX < w + 50) {
+                drawCar(rivalX, h * 0.45, state.rival.color, state.rival.name.split(' ')[0], false);
+            }
+
+            // Draw battle effects
+            if (state.phase === PHASE.ACTIVE) {
+                // Draw gap indicator
+                ctx.fillStyle = gap > 0 ? '#ff4466' : '#00ff88';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText((gap > 0 ? 'BEHIND ' : 'AHEAD ') + Math.abs(gap).toFixed(0) + 'm', w / 2, h * 0.2);
+            }
+
+            // Draw countdown
+            if (state.phase === PHASE.COUNTDOWN) {
+                const seconds = Math.ceil(state.countdownTicks / 60);
+                ctx.fillStyle = '#ffd700';
+                ctx.font = 'bold 48px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(seconds, w / 2, h / 2);
+            }
+        }
+
+        function drawCar(x, y, color, label, boosting) {
+            ctx.save();
+
+            // Car body
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.roundRect(x - 25, y - 12, 50, 24, 5);
+            ctx.fill();
+
+            // Boost flame
+            if (boosting) {
+                ctx.fillStyle = '#ff6600';
+                ctx.beginPath();
+                ctx.moveTo(x - 25, y - 5);
+                ctx.lineTo(x - 40 - Math.random() * 10, y);
+                ctx.lineTo(x - 25, y + 5);
+                ctx.fill();
+            }
+
+            // Headlights
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(x + 22, y - 6, 3, 0, Math.PI * 2);
+            ctx.arc(x + 22, y + 6, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, x, y - 20);
+
+            ctx.restore();
+        }
+
+        // Main game tick (60Hz)
+        function gameTick() {
+            state.tick++;
+
+            // Update cooldowns
+            if (state.playerBoostCooldown > 0) state.playerBoostCooldown--;
+            document.getElementById('btnBoost').disabled = state.playerBoostCooldown > 0;
+
+            // Random speed variations
+            state.playerSpeed += (Math.random() - 0.5) * 0.2;
+            state.playerSpeed = Math.max(35, Math.min(65, state.playerSpeed));
+
+            if (state.rival) {
+                // Rival AI speed adjustment
+                state.rivalSpeed += (Math.random() - 0.5) * 0.3;
+                state.rivalSpeed = Math.max(30, Math.min(55 + state.rival.skill * 15, state.rivalSpeed));
+
+                // During battle, rival tries harder
+                if (state.phase === PHASE.ACTIVE) {
+                    if (state.rivalProgress < state.playerProgress) {
+                        state.rivalSpeed += 0.05; // Try to catch up
+                    }
+                }
+            }
+
+            // Update positions
+            state.playerProgress += state.playerSpeed / 60;
+            if (state.rival) {
+                state.rivalProgress += state.rivalSpeed / 60;
+            }
+
+            // Phase-specific logic
+            switch (state.phase) {
+                case PHASE.IDLE:
+                    // Chance to spawn rival
+                    if (!state.rival && Math.random() < 0.002) {
+                        spawnRival();
+                    }
+                    // Rival despawns if too far
+                    if (state.rival) {
+                        const gap = Math.abs(state.rivalProgress - state.playerProgress);
+                        if (gap > 300) {
+                            log('💨 Rival disappeared into the night...');
+                            state.rival = null;
+                            updateRivalCard();
+                        }
+                    }
+                    break;
+
+                case PHASE.COUNTDOWN:
+                    state.countdownTicks--;
+                    if (state.countdownTicks <= 0) {
+                        state.phase = PHASE.ACTIVE;
+                        state.battleStartTick = state.tick;
+                        state.playerSP = 1.0;
+                        state.rivalSP = state.rival.spPool;
+                        updateBattleStatus();
+                        log('⚔️ BATTLE START!', 'critical');
+                    }
+                    break;
+
+                case PHASE.ACTIVE:
+                    // Calculate SP drain
+                    const gap = state.rivalProgress - state.playerProgress;
+                    const playerIsLeader = gap < 0;
+                    const absGap = Math.abs(gap);
+                    const speedDiff = playerIsLeader
+                        ? state.playerSpeed - state.rivalSpeed
+                        : state.rivalSpeed - state.playerSpeed;
+                    const battleDuration = (state.tick - state.battleStartTick) / 60;
+
+                    const drain = computeDrain(absGap, speedDiff, battleDuration);
+
+                    // Apply drain to trailing car
+                    if (playerIsLeader) {
+                        state.rivalSP -= drain;
+                        if (state.rivalSP < SP_CONFIG.criticalThreshold * state.rival.spPool &&
+                            state.rivalSP + drain >= SP_CONFIG.criticalThreshold * state.rival.spPool) {
+                            log('⚠️ Rival SP CRITICAL!', 'critical');
+                        }
+                    } else {
+                        state.playerSP -= drain;
+                        if (state.playerSP < SP_CONFIG.criticalThreshold &&
+                            state.playerSP + drain >= SP_CONFIG.criticalThreshold) {
+                            log('⚠️ Your SP is CRITICAL!', 'critical');
+                        }
+                    }
+
+                    // Check victory/defeat
+                    if (state.rivalSP <= 0) {
+                        state.phase = PHASE.VICTORY;
+                        state.victories++;
+                        const rep = state.rival.tier === 'WANDERER' ? 100 :
+                            state.rival.tier === 'BOSS' ? 300 : 1000;
+                        state.repEarned += rep;
+                        updateBattleStatus();
+                        log(`🏆 VICTORY! +${rep} REP`, 'victory');
+                        setTimeout(resetAfterBattle, 3000);
+                    } else if (state.playerSP <= 0) {
+                        state.phase = PHASE.DEFEAT;
+                        state.defeats++;
+                        updateBattleStatus();
+                        log('💀 DEFEATED...', 'defeat');
+                        setTimeout(resetAfterBattle, 3000);
+                    }
+
+                    updateSPBars();
+                    break;
+            }
+
+            // Update button state
+            document.getElementById('btnFlash').disabled = state.phase !== PHASE.IDLE || !state.rival;
+
+            updateStats();
+            drawTrack();
+        }
+
+        function resetAfterBattle() {
+            state.phase = PHASE.IDLE;
+            state.rival = null;
+            state.playerSP = 1.0;
+            updateBattleStatus();
+            updateRivalCard();
+            updateSPBars();
+        }
+
+        function resetDemo() {
+            state = {
+                phase: PHASE.IDLE,
+                tick: 0,
+                battleStartTick: 0,
+                countdownTicks: 0,
+                playerProgress: 0,
+                playerSpeed: 45,
+                playerSP: 1.0,
+                playerBoostActive: false,
+                playerBoostCooldown: 0,
+                rival: null,
+                rivalProgress: 0,
+                rivalSpeed: 42,
+                rivalSP: 1.0,
+                victories: 0,
+                defeats: 0,
+                repEarned: 0
+            };
+            document.getElementById('logContent').innerHTML = '';
+            updateBattleStatus();
+            updateRivalCard();
+            updateSPBars();
+            updateStats();
+            log('🔄 Demo reset');
+        }
+
+        // Start the game loop
+        log('🏎️ Highway Battle System initialized');
+        log('💡 Wait for a rival to appear, then flash headlights to challenge!');
+        setInterval(gameTick, 1000 / 60); // 60 Hz
+    </script>
+</body>
+
+</html>

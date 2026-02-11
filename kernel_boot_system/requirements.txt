@@ -1,0 +1,7 @@
+# Kernel Boot System — Requirements
+
+# Core dependencies
+jsonschema==4.22.0
+
+# IPFS interaction (subprocess-based)
+# No additional Python package needed - uses ipfs CLI

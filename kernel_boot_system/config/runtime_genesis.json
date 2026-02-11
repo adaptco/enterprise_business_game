@@ -1,0 +1,22 @@
+{
+    "checkpoint_interval": 10,
+    "ssot_enabled": false,
+    "runtime_params": {
+        "kernel": {
+            "version": "1.0.0",
+            "mode": "deterministic"
+        },
+        "execution": {
+            "max_ticks": 100,
+            "agent_pool_size": 3
+        },
+        "network": {
+            "api": "/ip4/127.0.0.1/tcp/5001",
+            "gateway": "/ip4/127.0.0.1/tcp/8080"
+        }
+    },
+    "metadata": {
+        "creator": "kernel_boot_system",
+        "purpose": "Genesis runtime configuration for kernel orchestration"
+    }
+}

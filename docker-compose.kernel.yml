@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # IPFS node for content-addressed storage
+  ipfs:
+    image: ipfs/kubo:v0.25.0
+    ports:
+      - "4001:4001" # Swarm
+      - "5001:5001" # API
+      - "8080:8080" # Gateway
+    volumes:
+      - ipfs_data:/data/ipfs
+    environment:
+      - IPFS_PROFILE=server
+    restart: unless-stopped
+
+  # Kernel boot system
+  kernel:
+    build:
+      context: .
+      dockerfile: Dockerfile.kernel
+    depends_on:
+      - ipfs
+    ports:
+      - "8002:8002" # Kernel API (future)
+    volumes:
+      - ./kernel_boot_system:/app
+      - ./src:/app/src_parent
+    environment:
+      - IPFS_API=/ip4/ipfs/tcp/5001
+      - CHECKPOINT_INTERVAL=10
+      - SSOT_ENABLED=false
+    command: >
+      sh -c "sleep 5 && python src/kernel.py --boot --ticks 50"
+    restart: on-failure
+
+volumes:
+  ipfs_data:
+    driver: local

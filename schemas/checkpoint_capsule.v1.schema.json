@@ -1,0 +1,209 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Checkpoint Capsule V1",
+	"description": "IPFS-backed checkpoint capsule for deterministic game state replay with Merkle lineage",
+	"type": "object",
+	"required": [
+		"checkpoint_id",
+		"tick",
+		"timestamp_utc",
+		"flow_state",
+		"resume_token",
+		"canonical_sha256"
+	],
+	"properties": {
+		"checkpoint_id": {
+			"type": "string",
+			"format": "uuid",
+			"description": "Unique checkpoint identifier"
+		},
+		"tick": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Game tick when checkpoint was created"
+		},
+		"timestamp_utc": {
+			"type": "string",
+			"format": "date-time",
+			"description": "ISO 8601 timestamp of checkpoint creation"
+		},
+		"flow_state": {
+			"type": "object",
+			"required": [
+				"companies",
+				"market_conditions",
+				"total_companies",
+				"seed"
+			],
+			"properties": {
+				"companies": {
+					"type": "object",
+					"description": "Map of company_id to full company state",
+					"additionalProperties": {
+						"type": "object",
+						"description": "Company state snapshot (follows company_state.v1.schema.json)"
+					}
+				},
+				"market_conditions": {
+					"type": "object",
+					"required": [
+						"demand_multiplier",
+						"interest_rate_pct",
+						"labor_cost_per_employee_usd",
+						"raw_material_cost_usd",
+						"consumer_confidence_index",
+						"regulatory_burden"
+					],
+					"properties": {
+						"demand_multiplier": {
+							"type": "number",
+							"description": "Market demand scaling factor"
+						},
+						"interest_rate_pct": {
+							"type": "number",
+							"description": "Current interest rate percentage"
+						},
+						"labor_cost_per_employee_usd": {
+							"type": "number",
+							"description": "Per-employee labor cost in USD"
+						},
+						"raw_material_cost_usd": {
+							"type": "number",
+							"description": "Raw material cost per unit"
+						},
+						"consumer_confidence_index": {
+							"type": "number",
+							"description": "Consumer confidence index (0-100)"
+						},
+						"regulatory_burden": {
+							"type": "number",
+							"description": "Regulatory burden factor (0-1)"
+						}
+					},
+					"description": "Global market conditions at checkpoint time"
+				},
+				"total_companies": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Total number of registered companies"
+				},
+				"seed": {
+					"type": "integer",
+					"description": "Random seed for deterministic replay"
+				}
+			},
+			"description": "Complete game state snapshot"
+		},
+		"resume_token": {
+			"type": "string",
+			"description": "Opaque token for deterministic replay resumption (format: checkpoint_id@tick)"
+		},
+		"canonical_sha256": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$",
+			"description": "SHA-256 hash of flow_state (JCS canonical form)"
+		},
+		"prev_checkpoint_hash": {
+			"type": [
+				"string",
+				"null"
+			],
+			"pattern": "^[a-f0-9]{64}$",
+			"description": "SHA-256 hash of previous checkpoint (Merkle chain link, null for first checkpoint)"
+		},
+		"merkle_root": {
+			"type": "string",
+			"pattern": "^[a-f0-9]{64}$",
+			"description": "Merkle root hash for batch verification (computed from all company ledger chains)"
+		},
+		"ipfs_cid": {
+			"type": "string",
+			"pattern": "^[a-z0-9]{59}$",
+			"description": "CIDv1 identifier in base32 encoding (e.g., bagiacgza...)"
+		},
+		"multihash": {
+			"type": "string",
+			"pattern": "^(0x)?1b20[a-f0-9]{64}$",
+			"description": "Raw multihash in hex format (0x1b = keccak-256, 0x20 = 256 bits, followed by 32-byte hash)"
+		},
+		"codec": {
+			"type": "string",
+			"enum": [
+				"dag-json",
+				"dag-cbor",
+				"raw"
+			],
+			"description": "IPFS codec used for content serialization"
+		},
+		"storage_uri": {
+			"type": "string",
+			"format": "uri",
+			"pattern": "^ipfs://",
+			"description": "Full IPFS URI (ipfs://<cid>)"
+		},
+		"council_attestation": {
+			"type": "object",
+			"properties": {
+				"signatures": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"signer_id",
+							"signature_hex",
+							"timestamp_utc"
+						],
+						"properties": {
+							"signer_id": {
+								"type": "string",
+								"description": "Council member identifier"
+							},
+							"signature_hex": {
+								"type": "string",
+								"pattern": "^[a-f0-9]+$",
+								"description": "Cryptographic signature (hex-encoded)"
+							},
+							"timestamp_utc": {
+								"type": "string",
+								"format": "date-time",
+								"description": "Signature timestamp"
+							}
+						}
+					},
+					"description": "List of council attestation signatures"
+				},
+				"quorum_met": {
+					"type": "boolean",
+					"description": "Whether required quorum was met"
+				}
+			},
+			"description": "Optional governance attestation for checkpoint approval"
+		},
+		"replay_authorized": {
+			"type": "boolean",
+			"default": true,
+			"description": "Flag indicating whether this checkpoint is authorized for replay"
+		},
+		"metadata": {
+			"type": "object",
+			"properties": {
+				"creator": {
+					"type": "string",
+					"description": "Entity that created the checkpoint (e.g., 'master_agent', 'api_user')"
+				},
+				"purpose": {
+					"type": "string",
+					"description": "Reason for checkpoint creation (e.g., 'auto_checkpoint', 'manual_save', 'audit_snapshot')"
+				},
+				"tags": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"description": "Arbitrary tags for classification"
+				}
+			},
+			"description": "Optional metadata for checkpoint classification"
+		}
+	}
+}

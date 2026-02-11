@@ -1,0 +1,77 @@
+{
+    "$id": "https://corridor.schemas/VerseCapsule.v1.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "VerseCapsule.v1",
+    "type": "object",
+    "required": [
+        "schema_version",
+        "capsule_id",
+        "operator",
+        "work_id",
+        "track_id",
+        "verse_index",
+        "lines",
+        "canonicalization",
+        "verse_hash"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": "VerseCapsule.v1"
+        },
+        "capsule_id": {
+            "type": "string",
+            "description": "Stable identifier for this verse capsule."
+        },
+        "operator": {
+            "type": "string",
+            "description": "Primary vocal/author identity (e.g., Crooked I)."
+        },
+        "work_id": {
+            "type": "string",
+            "description": "Work or album identifier (e.g., OUR HOUSE)."
+        },
+        "track_id": {
+            "type": "string",
+            "description": "Track identifier within the work."
+        },
+        "verse_index": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based index of the verse within the track."
+        },
+        "lines": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string"
+            },
+            "description": "Ordered lyrical lines of the verse."
+        },
+        "canonicalization": {
+            "type": "object",
+            "required": [
+                "encoding",
+                "canonicalization_law"
+            ],
+            "properties": {
+                "encoding": {
+                    "const": "utf-8"
+                },
+                "canonicalization_law": {
+                    "const": "CanonicalizationLawV1"
+                }
+            }
+        },
+        "verse_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "SHA-256 over CanonicalJson.v1 of { operator, verse: lines }."
+        },
+        "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional extra tags (session, studio, take, etc.)."
+        }
+    },
+    "additionalProperties": false
+}

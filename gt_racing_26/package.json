@@ -1,0 +1,17 @@
+{
+    "name": "gt-racing-26",
+    "version": "1.0.0",
+    "description": "Deterministic racing kernel with Replay Court ledger",
+    "main": "gt_racing_cli.js",
+    "scripts": {
+        "test": "echo \"GT Racing tests not yet implemented\" && exit 0"
+    },
+    "keywords": [
+        "deterministic",
+        "racing",
+        "replay-court",
+        "merkle"
+    ],
+    "author": "",
+    "license": "MIT"
+}

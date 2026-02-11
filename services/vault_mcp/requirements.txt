@@ -1,0 +1,2 @@
+# No external dependencies beyond stdlib
+# cryptography is optional for real Ed25519 signing

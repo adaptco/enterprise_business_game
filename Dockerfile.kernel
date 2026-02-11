@@ -1,0 +1,41 @@
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install IPFS (Kubo)
+RUN cd /tmp && \
+    wget https://dist.ipfs.tech/kubo/v0.25.0/kubo_v0.25.0_linux-amd64.tar.gz && \
+    tar -xvzf kubo_v0.25.0_linux-amd64.tar.gz && \
+    cd kubo && \
+    bash install.sh && \
+    cd .. && \
+    rm -rf kubo*
+
+# Set working directory
+WORKDIR /app
+
+# Copy kernel boot system
+COPY kernel_boot_system/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source code
+COPY kernel_boot_system/src/ ./src/
+COPY kernel_boot_system/config/ ./config/
+COPY kernel_boot_system/prompts/ ./prompts/
+
+# Copy parent source for dependencies
+COPY src/runtime_block_generator.py ./src/
+COPY src/ssot_bridge.py ./src/ 2>/dev/null || true
+
+# Initialize IPFS repository
+RUN ipfs init || true
+
+# Expose ports
+EXPOSE 5001 8080 8002
+
+# Default command
+CMD ["python", "src/kernel.py", "--boot", "--ticks", "50"]

@@ -1,0 +1,68 @@
+{
+    "$id": "https://corridor.schemas/ReplayVerdictCapsule.v1.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ReplayVerdictCapsule.v1",
+    "description": "Binds a replay court verdict hash to a frozen verse capsule.",
+    "type": "object",
+    "required": [
+        "schema_version",
+        "verdict_id",
+        "replaycourthash",
+        "verse_capsule_ref",
+        "verdict_hash",
+        "timestamp_iso8601"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": "ReplayVerdictCapsule.v1"
+        },
+        "verdict_id": {
+            "type": "string",
+            "description": "Unique identifier for this verdict."
+        },
+        "replaycourthash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "SHA-256 hash of the replay court session state."
+        },
+        "verse_capsule_ref": {
+            "type": "object",
+            "required": [
+                "capsule_id",
+                "verse_hash"
+            ],
+            "properties": {
+                "capsule_id": {
+                    "type": "string",
+                    "description": "Reference to VerseCapsule.v1.capsule_id."
+                },
+                "verse_hash": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "description": "Must match VerseCapsule.v1.verse_hash."
+                }
+            },
+            "additionalProperties": false
+        },
+        "verdict_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "SHA-256 over CanonicalJson.v1 of { replaycourthash, verse_hash }."
+        },
+        "timestamp_iso8601": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of verdict creation."
+        },
+        "judge_identity": {
+            "type": "string",
+            "description": "Optional identity of the judge/validator."
+        },
+        "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional extra context."
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,119 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Market State V1",
+    "description": "Schema for global market conditions at each tick",
+    "type": "object",
+    "required": [
+        "tick",
+        "market_conditions",
+        "company_rankings",
+        "merkle_state_hash"
+    ],
+    "properties": {
+        "tick": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current game tick"
+        },
+        "market_conditions": {
+            "type": "object",
+            "required": [
+                "demand_multiplier",
+                "interest_rate_pct",
+                "labor_cost_per_employee_usd",
+                "raw_material_cost_usd"
+            ],
+            "properties": {
+                "demand_multiplier": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 5.0,
+                    "description": "Market demand multiplier (1.0 = normal, >1.0 = high demand, <1.0 = recession)"
+                },
+                "interest_rate_pct": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 25,
+                    "description": "Interest rate for loans (percentage)"
+                },
+                "labor_cost_per_employee_usd": {
+                    "type": "number",
+                    "minimum": 1000,
+                    "description": "Cost per employee per tick (USD)"
+                },
+                "raw_material_cost_usd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Cost of raw materials per production unit (USD)"
+                },
+                "consumer_confidence_index": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Consumer confidence (0-100, affects demand)"
+                },
+                "regulatory_burden": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Regulatory compliance cost multiplier (0 = none, 1 = high)"
+                }
+            },
+            "description": "Current market economic conditions"
+        },
+        "company_rankings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "company_id",
+                    "revenue_usd",
+                    "rank"
+                ],
+                "properties": {
+                    "company_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "company_name": {
+                        "type": "string"
+                    },
+                    "revenue_usd": {
+                        "type": "number"
+                    },
+                    "market_share_pct": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "rank": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "employees": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "is_ai": {
+                        "type": "boolean",
+                        "description": "True if company is AI-controlled"
+                    }
+                }
+            },
+            "description": "Ranking of all companies by revenue"
+        },
+        "merkle_state_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of (market_conditions + all company states) for this tick"
+        },
+        "prev_state_hash": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of previous tick's market state (Merkle link)"
+        }
+    }
+}

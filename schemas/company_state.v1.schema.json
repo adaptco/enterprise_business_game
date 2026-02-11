@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Company State V1",
+    "description": "Schema for complete company state snapshot at a given tick",
+    "type": "object",
+    "required": [
+        "company_id",
+        "tick",
+        "resources",
+        "financial_state",
+        "performance_metrics",
+        "state_hash"
+    ],
+    "properties": {
+        "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Company identifier"
+        },
+        "company_name": {
+            "type": "string",
+            "description": "Company name"
+        },
+        "tick": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current game tick"
+        },
+        "resources": {
+            "type": "object",
+            "required": [
+                "employees",
+                "cash_usd",
+                "inventory_units"
+            ],
+            "properties": {
+                "employees": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Current number of employees"
+                },
+                "cash_usd": {
+                    "type": "number",
+                    "description": "Current cash balance (can be negative for debt)"
+                },
+                "inventory_units": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Current inventory units"
+                },
+                "equipment_value_usd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Total equipment/asset value"
+                }
+            },
+            "description": "Current resource levels"
+        },
+        "financial_state": {
+            "type": "object",
+            "required": [
+                "total_revenue_usd",
+                "total_expenses_usd",
+                "net_income_usd"
+            ],
+            "properties": {
+                "total_revenue_usd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Lifetime revenue"
+                },
+                "total_expenses_usd": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Lifetime expenses"
+                },
+                "net_income_usd": {
+                    "type": "number",
+                    "description": "Total net income (revenue - expenses)"
+                },
+                "current_tick_revenue": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Revenue for current tick only"
+                },
+                "current_tick_expenses": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Expenses for current tick only"
+                }
+            },
+            "description": "Financial performance metrics"
+        },
+        "performance_metrics": {
+            "type": "object",
+            "properties": {
+                "market_share_pct": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Current market share percentage"
+                },
+                "brand_value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Brand reputation/value score"
+                },
+                "employee_productivity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Average units produced per employee per tick"
+                },
+                "profit_margin_pct": {
+                    "type": "number",
+                    "description": "Profit margin (net income / revenue * 100)"
+                }
+            },
+            "description": "Business performance KPIs"
+        },
+        "state_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of complete company state (for integrity verification)"
+        },
+        "prev_state_hash": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of previous tick's state (Merkle link)"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "verification_date": "2026-01-12T16:30:00Z",
+  "ledger_type": "gt_racing_simulation",
+  "status": "PASSED",
+  "total_entries": 300,
+  "genesis_hash": "genesis_physics_69e0efa0",
+  "terminal_hash": "cd207104",
+  "duration_ticks": 300,
+  "vehicles": [
+    "car_1",
+    "car_2"
+  ],
+  "integrity_violations": 0,
+  "deterministic": true
+}

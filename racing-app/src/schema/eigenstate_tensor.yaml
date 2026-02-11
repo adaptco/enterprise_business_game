@@ -1,0 +1,113 @@
+%YAML 1.2
+---
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://adapt.co/schemas/eigenstate-tensor.v1.yaml"
+title: Eigenstate Tensor Configuration
+description: >
+  Formal schema defining the dimensions, boundaries, and transition logic
+  for the Eigenstate Phase Map. This schema serves as the 'Sealed Capsule'
+  definition for the tensor corridor.
+
+type: object
+properties:
+  version:
+    type: string
+    const: "1.0.0"
+    description: "Schema version for ledger immutability."
+
+  dimensions:
+    type: object
+    description: "Definitions of the primary tensor axes (φ-parameters)."
+    required:
+      [
+        "phi2_load",
+        "phi3_risk",
+        "phi4_billing",
+        "J7_attention",
+        "Q10_causality",
+      ]
+    properties:
+      phi2_load:
+        type: object
+        properties:
+          axis: { const: "LOAD" }
+          metric: { const: "request_rate_tps" }
+          range:
+            {
+              type: "array",
+              items: { type: "number" },
+              minItems: 2,
+              maxItems: 2,
+            }
+
+      phi3_risk:
+        type: object
+        properties:
+          axis: { const: "ENTROPY" }
+          metric: { const: "token_burn_rate" }
+          thresholds:
+            nominal: { type: "number", default: 0.5 }
+            critical: { type: "number", default: 0.95 }
+
+      phi4_billing:
+        type: object
+        properties:
+          axis: { const: "CONSTRAINT" }
+          states:
+            {
+              type: "array",
+              items: { type: "string", enum: ["OK", "WARN", "BLOCKED"] },
+            }
+
+      J7_attention:
+        type: object
+        description: "Vector space for active alert flags."
+        properties:
+          max_cardinality: { type: "integer", default: 7 }
+
+      Q10_causality:
+        type: object
+        description: "Vector space for unresolved long-tail causal events."
+        properties:
+          max_cardinality: { type: "integer", default: 10 }
+
+  activation_boundary:
+    type: object
+    description: "The definition of the Q-Region activation criteria."
+    properties:
+      load_threshold:
+        type: number
+        description: "Aggregate load score required to trigger E3."
+        default: 20.0
+      tension_threshold:
+        type: number
+        description: "Aggregate tension score (alerts + pending) to trigger E3."
+        default: 5.0
+      hard_kill_conditions:
+        type: array
+        items:
+          type: object
+          properties:
+            dimension: { type: "string" }
+            condition: { type: "string", enum: [">", "<", "=="] }
+            value: { type: "number" }
+
+  states:
+    type: object
+    description: "Enumeration of valid eigenstates."
+    properties:
+      E1_WATCH:
+        description: "System is in nominal monitoring mode. Low energy."
+        code: 0x01
+      E3_Q_ACTIVE:
+        description: "System has crossed the activation boundary. High energy, sovereign logic engaged."
+        code: 0x03
+      EQURT:
+        description: "Quantum Uncertainty / Load Shedding state. System protection active."
+        code: 0xFF
+
+required:
+  - version
+  - dimensions
+  - activation_boundary
+  - states

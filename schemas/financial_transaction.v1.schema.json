@@ -1,0 +1,149 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Financial Transaction V1",
+    "description": "Schema for financial transactions with double-entry accounting",
+    "type": "object",
+    "required": [
+        "transaction_id",
+        "timestamp",
+        "tick",
+        "from_company_id",
+        "to_company_id",
+        "amount_usd",
+        "transaction_type",
+        "ledger_entry",
+        "state_integrity",
+        "prev_transaction_hash"
+    ],
+    "properties": {
+        "transaction_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this transaction"
+        },
+        "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of transaction"
+        },
+        "tick": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Game tick when transaction occurred"
+        },
+        "from_company_id": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "format": "uuid",
+            "description": "Source company ID (null for external/market source)"
+        },
+        "to_company_id": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "format": "uuid",
+            "description": "Destination company ID (null for external/market destination)"
+        },
+        "amount_usd": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Transaction amount in USD (always positive, direction determined by from/to)"
+        },
+        "transaction_type": {
+            "type": "string",
+            "enum": [
+                "REVENUE",
+                "EXPENSE",
+                "INVESTMENT",
+                "LOAN",
+                "LOAN_REPAYMENT",
+                "ACQUISITION",
+                "DIVIDEND",
+                "TAX"
+            ],
+            "description": "Type of financial transaction"
+        },
+        "ledger_entry": {
+            "type": "object",
+            "required": [
+                "debit_account",
+                "credit_account"
+            ],
+            "properties": {
+                "debit_account": {
+                    "type": "string",
+                    "enum": [
+                        "CASH",
+                        "ACCOUNTS_RECEIVABLE",
+                        "INVENTORY",
+                        "EQUIPMENT",
+                        "ACCOUNTS_PAYABLE",
+                        "LOANS_PAYABLE",
+                        "EQUITY",
+                        "REVENUE",
+                        "COGS",
+                        "OPERATING_EXPENSES",
+                        "INTEREST_EXPENSE"
+                    ],
+                    "description": "Account to be debited"
+                },
+                "credit_account": {
+                    "type": "string",
+                    "enum": [
+                        "CASH",
+                        "ACCOUNTS_RECEIVABLE",
+                        "INVENTORY",
+                        "EQUIPMENT",
+                        "ACCOUNTS_PAYABLE",
+                        "LOANS_PAYABLE",
+                        "EQUITY",
+                        "REVENUE",
+                        "COGS",
+                        "OPERATING_EXPENSES",
+                        "INTEREST_EXPENSE"
+                    ],
+                    "description": "Account to be credited"
+                }
+            },
+            "description": "Double-entry bookkeeping ledger entry"
+        },
+        "state_integrity": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of transaction payload (excluding this field)"
+        },
+        "prev_transaction_hash": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of previous transaction in this company's ledger (Merkle link)"
+        },
+        "related_operation_id": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "format": "uuid",
+            "description": "ID of business operation that triggered this transaction (if applicable)"
+        },
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Human-readable transaction description"
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Accounting category or tag"
+                }
+            },
+            "description": "Optional transaction metadata"
+        }
+    }
+}

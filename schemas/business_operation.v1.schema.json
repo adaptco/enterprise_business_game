@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Business Operation V1",
+    "description": "Schema for discrete business operations (hire, produce, sell, invest)",
+    "type": "object",
+    "required": [
+        "operation_id",
+        "company_id",
+        "tick",
+        "operation_type",
+        "resource_delta",
+        "decision_trace",
+        "prev_operation_hash",
+        "operation_hash"
+    ],
+    "properties": {
+        "operation_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this operation"
+        },
+        "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Company executing this operation"
+        },
+        "tick": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Game tick when this operation is executed"
+        },
+        "operation_type": {
+            "type": "string",
+            "enum": [
+                "HIRE",
+                "FIRE",
+                "PRODUCE",
+                "MARKET",
+                "R_AND_D",
+                "ACQUIRE",
+                "INVEST",
+                "LOAN"
+            ],
+            "description": "Type of business operation"
+        },
+        "resource_delta": {
+            "type": "object",
+            "required": [
+                "cash_usd"
+            ],
+            "properties": {
+                "employees": {
+                    "type": "integer",
+                    "description": "Change in employee count (+/-)"
+                },
+                "cash_usd": {
+                    "type": "number",
+                    "description": "Change in cash balance (+/-)"
+                },
+                "inventory_units": {
+                    "type": "integer",
+                    "description": "Change in inventory units (+/-)"
+                },
+                "market_share_pct": {
+                    "type": "number",
+                    "minimum": -100,
+                    "maximum": 100,
+                    "description": "Change in market share percentage (+/-)"
+                },
+                "brand_value": {
+                    "type": "number",
+                    "description": "Change in brand value/reputation (+/-)"
+                }
+            },
+            "description": "Resource changes resulting from this operation"
+        },
+        "decision_trace": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "step",
+                    "result"
+                ],
+                "properties": {
+                    "step": {
+                        "type": "string",
+                        "description": "Name of decision step"
+                    },
+                    "result": {
+                        "type": "string",
+                        "description": "Outcome of this step (PASS/FAIL/SKIP)"
+                    },
+                    "details": {
+                        "type": "object",
+                        "description": "Additional context for this decision step"
+                    }
+                }
+            },
+            "description": "Audit trail of decision logic (per determinism contract)"
+        },
+        "prev_operation_hash": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of previous operation (Merkle link), null for genesis"
+        },
+        "operation_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of this operation (computed from all fields except this one)"
+        },
+        "metadata": {
+            "type": "object",
+            "properties": {
+                "ai_controlled": {
+                    "type": "boolean",
+                    "description": "True if operation was submitted by AI agent"
+                },
+                "justification": {
+                    "type": "string",
+                    "description": "Human/AI explanation for this operation"
+                }
+            },
+            "description": "Optional operation metadata"
+        }
+    }
+}

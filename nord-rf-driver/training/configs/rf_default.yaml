@@ -1,0 +1,42 @@
+# Random Forest Driver Training Configuration (v1)
+
+# RNG seed for reproducibility
+seed: 42
+
+# Random Forest hyperparameters
+n_estimators: 100
+max_depth: 18
+min_samples_leaf: 5
+min_samples_split: 10
+
+# Data preprocessing
+test_size: 0.2
+val_size: 0.1
+
+# Feature selection (v1 minimal set)
+features:
+  - speed_mps
+  - yaw_rate_rad_s
+  - track_progress_m
+  - distance_to_center_m
+  - curvature_now_1pm
+  - curvature_10m_ahead_1pm
+  - curvature_30m_ahead_1pm
+  - grad_now
+  - dist_left_edge_m
+  - dist_right_edge_m
+  - prev_steering_command
+  - prev_throttle_command
+  - prev_brake_command
+
+# Targets
+targets:
+  - steering_command
+  - throttle_command
+  - brake_command
+
+# Training options
+normalize_features: true
+normalize_targets: true
+filter_invalid: true
+filter_offtrack: true

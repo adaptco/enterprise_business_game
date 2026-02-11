@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Feature Configuration V1",
+    "description": "Canonical feature ordering and metadata for RF driver state vector",
+    "version": "1.0.0",
+    "features": [
+        {
+            "index": 0,
+            "name": "speed_mps",
+            "type": "float",
+            "unit": "m/s",
+            "description": "Current vehicle speed in meters per second",
+            "normalization": "divide_by_max",
+            "max_value": 100.0
+        },
+        {
+            "index": 1,
+            "name": "yaw_rate_rps",
+            "type": "float",
+            "unit": "rad/s",
+            "description": "Yaw rate in radians per second",
+            "normalization": "divide_by_max",
+            "max_value": 3.14
+        },
+        {
+            "index": 2,
+            "name": "steering_angle_norm",
+            "type": "float",
+            "unit": "normalized",
+            "description": "Current steering angle normalized to [-1, 1]",
+            "normalization": "already_normalized",
+            "max_value": 1.0
+        },
+        {
+            "index": 3,
+            "name": "track_progress",
+            "type": "float",
+            "unit": "ratio",
+            "description": "Progress along track [0.0 = start, 1.0 = finish]",
+            "normalization": "already_normalized",
+            "max_value": 1.0
+        },
+        {
+            "index": 4,
+            "name": "dist_to_centerline_m",
+            "type": "float",
+            "unit": "m",
+            "description": "Lateral distance to track centerline (negative = left)",
+            "normalization": "divide_by_max",
+            "max_value": 10.0
+        },
+        {
+            "index": 5,
+            "name": "heading_error_rad",
+            "type": "float",
+            "unit": "rad",
+            "description": "Difference between vehicle heading and track tangent",
+            "normalization": "divide_by_pi",
+            "max_value": 3.14159
+        },
+        {
+            "index": 6,
+            "name": "curvature_now",
+            "type": "float",
+            "unit": "1/m",
+            "description": "Track curvature at current position",
+            "normalization": "divide_by_max",
+            "max_value": 0.1
+        },
+        {
+            "index": 7,
+            "name": "curvature_ahead_10m",
+            "type": "float",
+            "unit": "1/m",
+            "description": "Track curvature 10m ahead",
+            "normalization": "divide_by_max",
+            "max_value": 0.1
+        },
+        {
+            "index": 8,
+            "name": "curvature_ahead_30m",
+            "type": "float",
+            "unit": "1/m",
+            "description": "Track curvature 30m ahead",
+            "normalization": "divide_by_max",
+            "max_value": 0.1
+        },
+        {
+            "index": 9,
+            "name": "curvature_ahead_60m",
+            "type": "float",
+            "unit": "1/m",
+            "description": "Track curvature 60m ahead",
+            "normalization": "divide_by_max",
+            "max_value": 0.1
+        }
+    ],
+    "targets": [
+        {
+            "name": "steering_command",
+            "type": "float",
+            "unit": "normalized",
+            "description": "Steering command [-1 = full left, 1 = full right]",
+            "range": [
+                -1.0,
+                1.0
+            ]
+        },
+        {
+            "name": "throttle_command",
+            "type": "float",
+            "unit": "normalized",
+            "description": "Throttle command [0 = no throttle, 1 = full throttle]",
+            "range": [
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "name": "brake_command",
+            "type": "float",
+            "unit": "normalized",
+            "description": "Brake command [0 = no brake, 1 = full brake]",
+            "range": [
+                0.0,
+                1.0
+            ]
+        }
+    ]
+}

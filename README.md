@@ -20,7 +20,6 @@ A self-running, self-tuning, self-healing enterprise business simulation with sh
 ### Local Demo
 
 ```bash
-cd C:\Users\eqhsp\.gemini\antigravity\scratch\enterprise_business_game
 pip install -r requirements.txt
 python demo.py
 ```

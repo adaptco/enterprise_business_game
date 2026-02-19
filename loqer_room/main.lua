@@ -3,7 +3,8 @@
 -- The Loqer Room Engine Manifold
 -- Abstraction: Optimus Prime as virtual avatar for multimodal embedding field
 
-local json = require("json") -- Assuming a JSON lib is available or we stub it
+-- local json = require("json") -- Removed to use stub
+
 local optimus = {}
 local tensor_slice = {}
 

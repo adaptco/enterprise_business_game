@@ -1,0 +1,23 @@
+PROJECT HAWTHORNE - LOQER ROOM EDITION
+========================================
+
+Version: 1.0.0 (Standalone)
+Date:    2026-02-16
+
+CONTENTS
+--------
+- hawthorne_release.exe  : The Game (Double-click to play!)
+- hawthorne_release.love : Source package (for LÖVE users)
+- *.dll                  : Required libraries (Keep these with the .exe)
+- license.txt            : Love2D License
+
+REQUIREMENTS
+------------
+- Windows 64-bit
+- No installation required. Just unzip and run!
+
+CONTROLS
+--------
+- Esc: Quit
+
+ENJOY THE MANIFOLD!

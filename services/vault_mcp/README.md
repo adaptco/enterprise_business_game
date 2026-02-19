@@ -55,6 +55,25 @@ Fossilize an artifact into the Vault. Returns a signed `VaultFossilizationReceip
 
 ---
 
+## Tool: `deploy_tensor_slice`
+
+Deploy a tensor slice (checkpoint) into a LÖVE game package.
+
+### Input Schema
+
+```json
+{
+  "slice_path": "checkpoints/hawthorne_checkpoint.v1.json",
+  "output_path": "dist/hawthorne_deploy.love"
+}
+```
+
+### Output
+
+Returns success message with stdout from the deployer script.
+
+---
+
 ## MCP Client Configuration
 
 ### Claude Desktop (`claude_desktop_config.json`)

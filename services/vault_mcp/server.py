@@ -49,6 +49,18 @@ def handle_request(request: dict) -> dict:
                             },
                             "required": ["artifact_kind", "payload_hash_sha256", "run_id", "operator", "ts"]
                         }
+                    },
+                    {
+                        "name": "deploy_tensor_slice",
+                        "description": "Deploy a tensor slice (checkpoint) into a LÖVE game package.",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "slice_path": {"type": "string", "description": "Path to the checkpoint JSON"},
+                                "output_path": {"type": "string", "description": "Output path for the .love file"}
+                            },
+                            "required": ["slice_path"]
+                        }
                     }
                 ]
             }
@@ -84,6 +96,48 @@ def handle_request(request: dict) -> dict:
                         "isError": True
                     }
                 }
+        elif tool_name == "deploy_tensor_slice":
+            try:
+                import subprocess
+                slice_path = args.get("slice_path")
+                output_path = args.get("output_path", "dist/hawthorne_deploy.love")
+                
+                # Call tensor_deployer.py
+                cmd = [
+                    sys.executable, "tools/tensor_deployer.py",
+                    "--slice", slice_path,
+                    "--output", output_path
+                ]
+                
+                result = subprocess.run(cmd, capture_output=True, text=True)
+                
+                if result.returncode == 0:
+                    return {
+                        "jsonrpc": "2.0",
+                        "id": req_id,
+                        "result": {
+                            "content": [{"type": "text", "text": f"Deployed to {output_path}\n{result.stdout}"}]
+                        }
+                    }
+                else:
+                     return {
+                        "jsonrpc": "2.0",
+                        "id": req_id,
+                        "result": {
+                            "content": [{"type": "text", "text": f"Deployment failed:\n{result.stderr}"}],
+                            "isError": True
+                        }
+                    }
+            except Exception as e:
+                return {
+                    "jsonrpc": "2.0",
+                    "id": req_id,
+                    "result": {
+                        "content": [{"type": "text", "text": f"Error: {e}"}],
+                        "isError": True
+                    }
+                }
+
         else:
             return {
                 "jsonrpc": "2.0",

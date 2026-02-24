@@ -292,3 +292,46 @@ curl localhost:8001/health
 ---
 
 🏁 **Your game hub is now self-running in the field!**
+
+---
+
+## Unity MLOps Release Checklist
+
+Use this checklist before promoting a Unity ML training pipeline change.
+
+### Prerequisites and Platform
+
+- [ ] Unity Editor and ML-Agents package versions are pinned and compatible.
+- [ ] Python dependencies are pinned (`mlagents`, `pyyaml`, `croniter`).
+- [ ] GCP project, Vertex AI API, service account roles, and artifact bucket are configured.
+
+### Environment Readiness
+
+- [ ] local/dev smoke run completed.
+- [ ] staging run completed with production-like config.
+- [ ] production runtime (image, secrets, storage, quotas) validated.
+
+### Deployment Path Validation
+
+- [ ] Docker image builds successfully and runs single-job script.
+- [ ] Kubernetes deployment path selected and validated:
+  - [ ] `CronJob` for periodic training; or
+  - [ ] long-running `Deployment` scheduler for continuous operation.
+
+### Monitoring and Ops
+
+- [ ] TensorBoard logs are emitted to expected path.
+- [ ] Webhook notifications are sent on start/success/failure.
+- [ ] Restart/failure policy verified (`backoffLimit`, probes, restart policy).
+
+### Model Governance
+
+- [ ] Version naming follows approved format.
+- [ ] Promotion criteria passed (metrics, regression, reproducibility).
+- [ ] Rollback target identified and rollback drill confirmed.
+
+### Script Entry Points
+
+- [ ] `scripts/single_job_test.py` imports `mlops_unity_pipeline.py` and runs end-to-end.
+- [ ] `scripts/scheduler_24x7.py` imports `mlops_unity_pipeline.py` and runs continuously.
+- [ ] Full setup documentation reviewed in `UNITY_MLOPS_SETUP.md`.

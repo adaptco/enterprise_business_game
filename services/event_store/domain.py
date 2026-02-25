@@ -7,10 +7,10 @@ from uuid import UUID, uuid4
 @dataclass
 class Event:
     """Represents a domain event."""
-    event_id: UUID = field(default_factory=uuid4)
     aggregate_id: UUID
     event_type: str
     payload: Dict[str, Any]
+    event_id: UUID = field(default_factory=uuid4)
     timestamp: datetime = field(default_factory=datetime.utcnow)
     version: int = 1
 

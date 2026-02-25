@@ -31,11 +31,11 @@
 
 ### Identity & Lineage (Required)
 
-| Field              | Type   | Purpose                          | Example                |
-|--------------------|--------|----------------------------------|------------------------|
-| `schema_version`   | string | Forward compatibility + audit    | `"sim.telemetry.v1"`   |
+| Field              | Type   | Purpose                            | Example                |
+|--------------------|--------|------------------------------------|------------------------|
+| `schema_version`   | string | Forward compatibility + audit      | `"sim.telemetry.v1"`   |
 | `run_id`           | string | Groups all ticks from a simulation | `"sim_001"`            |
-| `vehicle_id`       | string | Supports multi-vehicle runs      | `"car_1"`              |
+| `vehicle_id`       | string | Supports multi-vehicle runs        | `"car_1"`              |
 
 **Usage:** Enables replay, slicing, and audit trail.
 
@@ -97,7 +97,7 @@ These are **intentionally excluded** from v1 to keep Zapier logic simple:
 
 | Field                    | Reason                                              |
 |--------------------------|-----------------------------------------------------|
-| ❌ G-force               | Derivable: `accel_mps2 / 9.81`                     |
+| ❌ G-force               | Derivable: `accel_mps2 / 9.81`                      |
 | ❌ accel_x / accel_y     | Only add if you need braking vs throttle separation |
 | ❌ fuel / battery SOC    | Belongs to Powertrain schema                        |
 | ❌ engine RPM            | Belongs to Drivetrain schema                        |

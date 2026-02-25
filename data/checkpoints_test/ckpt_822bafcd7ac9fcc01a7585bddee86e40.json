@@ -1,10 +1,10 @@
 {
-  "checkpoint_id": "ckpt_e6547c607d6a0d10c21211f1a555fe9b",
+  "checkpoint_id": "ckpt_822bafcd7ac9fcc01a7585bddee86e40",
   "game_seed": 42,
   "merkle_proof": {
-    "ledger_root": "aaa3ea642e477fdb5c3877cb74bdf2d881e860f310f1e9a93fbef603be150f10",
+    "ledger_root": "03951cc7e0b8f0c2cf92c3586fff691b67064871d2cdda6b26521d5c6d71a37a",
     "prev_checkpoint_cid": null,
-    "state_hash": "0f20d9590de63646f5a221feb4e493facce46f452d82f93aeacf7f2b16985d5c"
+    "state_hash": "807a3f1534f70e9d2883a2e91482b377e424c2f0f36964b63d6b640406553755"
   },
   "replay_metadata": {
     "determinism_flags": {
@@ -18,7 +18,7 @@
   "state_vector": {
     "companies": [
       {
-        "company_id": "e8cd702b-af56-4e1c-828f-ad6e54e31860",
+        "company_id": "8843a373-fcf1-42d6-b7d0-b41f6b1dc9cb",
         "company_name": "Test Corp",
         "financial": {
           "current_tick_expenses_cents": 1500000,
@@ -26,7 +26,7 @@
           "total_expenses_cents": 1500000,
           "total_revenue_cents": 0
         },
-        "ledger_hash": "1383c44290a44033526ad06ba75234522a5bf641e65ff705e5b31170ed86973a",
+        "ledger_hash": "29b29b74ec79b8c3612bd92ef0d05c9ba14b59f5e989b76eb3a3d8c863f8f896",
         "ledger_transactions": 4,
         "metrics": {
           "brand_value_scaled": 0,
@@ -51,5 +51,5 @@
     }
   },
   "tick": 1,
-  "timestamp": "2026-01-11T07:42:04.464475+00:00"
+  "timestamp": "2026-02-25T10:44:05.997967+00:00"
 }

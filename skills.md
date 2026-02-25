@@ -15,7 +15,7 @@
 
 ## For Skill Developers: Production Release Guide
 ### Required Artifacts
-- Updated `skills.md` with executable, imperative instructions.
+- Updated `skills.md` if trigger policies or other shared guidance are affected.
 - Clean git diff scoped to requested changes.
 - One commit with a clear, action-oriented commit message.
 - Pull request title and body that summarize scope, checks, and operational impact.

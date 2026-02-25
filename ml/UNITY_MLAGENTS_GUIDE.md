@@ -4,7 +4,7 @@ Production-ready integration for Racing AI with Physics Validation.
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                        PYTHON (Trainer)                         │
 ├─────────────────────────────────────────────────────────────────┤
@@ -21,18 +21,18 @@ Production-ready integration for Racing AI with Physics Validation.
 
 ## Files Created
 
-| File | Description |
-|------|-------------|
-| `ml/unity_bridge/physics_validation_channel.py` | SideChannel for physics validation |
-| `ml/unity_bridge/train_racing_ai.py` | Training launcher |
-| `ml/configs/ppo_car.yaml` | PPO hyperparameters |
-| `unity_assets/Scripts/CarAgent.cs` | ML-Agents agent |
-| `unity_assets/Scripts/PhysicsValidationSideChannel.cs` | C# side channel |
+| File                                                   | Description                      |
+|--------------------------------------------------------|----------------------------------|
+| `ml/unity_bridge/physics_validation_channel.py`        | SideChannel for physics validation |
+| `ml/unity_bridge/train_racing_ai.py`                   | Training launcher                |
+| `ml/configs/ppo_car.yaml`                              | PPO hyperparameters              |
+| `unity_assets/Scripts/CarAgent.cs`                     | ML-Agents agent                  |
+| `unity_assets/Scripts/PhysicsValidationSideChannel.cs` | C# side channel                  |
 
 ## Tensor Observation Schema (12 floats)
 
 | Index | Field | Range | Source |
-|-------|-------|-------|--------|
+| --- | --- | --- | --- |
 | 0-2 | velocity_xyz | [-80,80]/80 | rb.velocity |
 | 3-5 | angular_vel_xyz | [-5,5]/5 | rb.angularVelocity |
 | 6 | grip_mu | [0.3,2.0]/2.0 | **validated** |
@@ -100,8 +100,8 @@ tensorboard --logdir results
 
 ## Expected Results
 
-| Metric | After 1M Steps | After 10M Steps |
-|--------|----------------|-----------------|
-| Lap Time | ~4:00 | ~2:45 |
-| Violations/Lap | ~50 | <5 |
-| Stability | 70% | 95% |
+| Metric          | After 1M Steps | After 10M Steps |
+|-----------------|----------------|-----------------|
+| Lap Time        | ~4:00          | ~2:45           |
+| Violations/Lap  | ~50            | <5              |
+| Stability       | 70%            | 95%             |

@@ -7,16 +7,16 @@ I've integrated your **Nürbringring AI racing simulator concept** with your exi
 ### Core Systems Created
 
 | File | Purpose | Lines | Key Features |
-|------|---------|-------|-------------|
-| **`src/racing_simulator.py`** | Racing physics & track | 400+ | • Deterministic 60Hz physics<br/>• 20.8km Nürburgring track<br/>• 31-feature state space<br/>• IPFS checkpoint integration |
-| **`src/racing_ai_trainer.py`** | Random Forest training | 350+ | • Multi-output regression (steering/throttle/brake)<br/>• Deterministic data splits<br/>• SSOT lineage tracking<br/>• Model versioning |
-| **`demo_racing_ai.py`** | Complete workflow demo | 250+ | • Expert recording<br/>• AI training<br/>• Autonomous racing<br/>• Replay verification |
-| **`RACING_AI_README.md`** | Documentation | Comprehensive | • Architecture diagrams<br/>• API reference<br/>• Training pipeline details |
-| **`INTEGRATION_MAP.md`** | System unification | Strategic | • Cross-system architecture<br/>• Unified governance ledger<br/>• Verification matrix |
+| --- | --- | --- | --- |
+| **`src/racing_simulator.py`** | Racing physics & track | 400+ | Deterministic 60Hz physics, 20.8km Nürburgring track, 31-feature state space, IPFS checkpoint integration |
+| **`src/racing_ai_trainer.py`** | Random Forest training | 350+ | Multi-output regression, Deterministic data splits, SSOT lineage tracking, Model versioning |
+| **`demo_racing_ai.py`** | Complete workflow demo | 250+ | Expert recording, AI training, Autonomous racing, Replay verification |
+| **`RACING_AI_README.md`** | Documentation | Comprehensive | Architecture diagrams, API reference, Training pipeline details |
+| **`INTEGRATION_MAP.md`** | System unification | Strategic | Cross-system architecture, Unified governance ledger, Verification matrix |
 
 ### Architecture Highlights
 
-```
+```text
 Expert Driver → Telemetry (NDJSON) → Random Forest Training → AI Driver
      ↓                                        ↓                    ↓
   Checkpoint                          Model Lineage          Checkpoint
@@ -29,24 +29,28 @@ Expert Driver → Telemetry (NDJSON) → Random Forest Training → AI Driver
 ## Key Features Implemented
 
 ### ✅ Deterministic Racing Simulator
+
 - **Fixed-step physics** (60Hz, deterministic integration)
 - **Nürburgring Nordschleife** track with 10 major sections
 - **31-dimensional state space** (speed, curvature, sensors, etc.)
 - **IPFS-compatible checkpoints** (same format as enterprise game)
 
 ### ✅ Random Forest AI Training
+
 - **Three specialized models** for steering, throttle, brake
 - **StandardScaler normalization** for feature consistency
 - **Deterministic splits** (seed=42 for reproducibility)
 - **Lineage hash tracking** (SHA-256 of training manifest)
 
 ### ✅ SSOT Integration
+
 - **Unified checkpoint schema** across all systems
 - **Governance ledger** (NDJSON append-only)
 - **Merkle chain linkage** (previousHash → hash)
 - **IPFS content-addressing** ready (bridge implemented)
 
 ### ✅ Replay Verification
+
 - **Byte-for-byte determinism** (same seed → same state hash)
 - **Audit script integration** (`audit_determinism.py` compatible)
 - **Replay viewer support** (NDJSON telemetry format)
@@ -69,18 +73,18 @@ python demo_racing_ai.py
 
 ## Integration with Your Existing Systems
 
-| Your System | Integration Point | Status |
-|-------------|------------------|---------|
-| **Enterprise Business Game** | Shares checkpoint format & IPFS bridge | ✅ Compatible |
-| **Governance Ledger** | Unified lineage tracking | ✅ Integrated |
-| **Corridor Replay** | NDJSON format for agent decisions | ✅ Compatible |
-| **Hamiltonian LoRA** | Training ledger format | ✅ Compatible |
-| **Replay Viewer** | Visualization of telemetry | ✅ Ready |
-| **MCP Vector Store** | Embedding search (planned) | 🚧 Next step |
+| Your System                  | Integration Point                       | Status         |
+|------------------------------|-----------------------------------------|----------------|
+| **Enterprise Business Game** | Shares checkpoint format & IPFS bridge  | ✅ Compatible  |
+| **Governance Ledger**        | Unified lineage tracking                | ✅ Integrated  |
+| **Corridor Replay**          | NDJSON format for agent decisions       | ✅ Compatible  |
+| **Hamiltonian LoRA**         | Training ledger format                  | ✅ Compatible  |
+| **Replay Viewer**            | Visualization of telemetry              | ✅ Ready       |
+| **MCP Vector Store**         | Embedding search (planned)              | 🚧 Next step  |
 
 ## Files Created
 
-```
+```text
 enterprise_business_game/
 ├── src/
 │   ├── racing_simulator.py          # ✅ New: Racing physics
@@ -93,7 +97,7 @@ enterprise_business_game/
 
 ## Example Output
 
-```
+```text
 🏁 Expert demonstration: 600 ticks @ 60Hz
    → Generated: data/nurburgring_expert.ndjson (600 samples)
 
@@ -116,11 +120,13 @@ enterprise_business_game/
 ## What You Can Do Now
 
 ### Immediate
+
 1. **Run the demo**: `python demo_racing_ai.py`
 2. **Visualize telemetry**: Load `data/nurburgring_expert.ndjson` in `replay_viewer.html`
 3. **Train longer**: Increase `num_ticks` for full lap data
 
 ### Next Steps
+
 1. **Enable IPFS**: Add `ipfs_bridge` to `RacingSimulator` initialization
 2. **Embed in vector store**: Search racing telemetry semantically
 3. **Deploy on real simulator**: Connect to Assetto Corsa/iRacing API

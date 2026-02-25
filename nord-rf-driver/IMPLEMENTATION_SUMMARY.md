@@ -7,7 +7,7 @@ I transformed your racing concept into a **scan-ready, production-grade system**
 ### Core Deliverables
 
 | File | Purpose | LOC | Status |
-|------|---------|-----|--------|
+| --- | --- | --- | --- |
 | **`state/state_space.py`** | VehicleStateV1 (13 features) + data structures | 150 | ✅ Complete |
 | **`data_collection/schema_training_sample.json`** | Data contract (22 fields) | JSON | ✅ Complete |
 | **`training/train_random_forest.py`** | Training pipeline with I/O contract | 250 | ✅ Complete |
@@ -18,7 +18,7 @@ I transformed your racing concept into a **scan-ready, production-grade system**
 
 ## Repo Structure (Scan-Ready)
 
-```
+```text
 nord-rf-driver/
 ├── env/                                         # 🚧 You implement
 │   ├── __init__.py                             # ✅
@@ -70,6 +70,7 @@ nord-rf-driver/
 ```
 
 **Legend:**
+
 - ✅ **Complete** — Fully implemented, drop-in ready
 - 🚧 **TODO** — Interface defined, you implement simulation specifics
 - (Optional) — Nice to have, not critical for v1
@@ -115,15 +116,18 @@ class VehicleStateV1:
 **`train_random_forest.py`** has explicit inputs/outputs:
 
 **Input:**
+
 - NDJSON/CSV matching `schema_training_sample.json`
 - YAML config with hyperparameters
 
 **Output:**
+
 - `steering.joblib`, `throttle.joblib`, `brake.joblib`
 - `scaler_*.joblib` (4 scalers)
 - `model_metadata.json` (lineage hash, metrics, feature names)
 
 **Command:**
+
 ```bash
 python training/train_random_forest.py \
   --data data/raw/expert.ndjson \
@@ -149,6 +153,7 @@ for tick in simulation:
 ```
 
 **Methods:**
+
 - `load_from_directory(path)` → driver
 - `tick(VehicleStateV1)` → ControlCommand
 - `reset()` — Reset control history
@@ -174,6 +179,7 @@ Change config without touching code.
 ### Priority 1: Simulation Core (`env/`)
 
 1. **`vehicle_dynamics.py`** — Physics integration
+
    ```python
    class VehicleDynamics:
        def step(self, steering, throttle, brake, dt=0.016):
@@ -182,6 +188,7 @@ Change config without touching code.
    ```
 
 2. **`track.py`** — Load Nürburgring geometry
+
    ```python
    class Track:
        def curvature_at(self, progress_m): ...
@@ -190,6 +197,7 @@ Change config without touching code.
    ```
 
 3. **`sim_loop.py`** — Main tick loop
+
    ```python
    def run_simulation(driver, num_ticks):
        for tick in range(num_ticks):
@@ -200,14 +208,16 @@ Change config without touching code.
 
 ### Priority 2: Data Collection (`data_collection/`)
 
-4. **`expert_controller.py`** — Heuristic or human driver
+1. **`expert_controller.py`** — Heuristic or human driver
+
    ```python
    class ExpertController:
        def decide(self, state_v1) -> ControlCommand:
            # Rule-based logic or human input
    ```
 
-5. **`record_expert_run.py`** — Export NDJSON
+2. **`record_expert_run.py`** — Export NDJSON
+
    ```python
    # Run expert, log every tick to schema format
    with open("data/raw/expert.ndjson", 'w') as f:
@@ -217,7 +227,7 @@ Change config without touching code.
 
 ### Priority 3: Evaluation (`agent_rf_driver/`)
 
-6. **`run_rf_agent_lap.py`** — CLI to run trained AI
+1. **`run_rf_agent_lap.py`** — CLI to run trained AI
 
 ## Testing the System
 
@@ -243,7 +253,7 @@ python agent_rf_driver/run_rf_agent_lap.py --model-dir data/models
 This system is **fully compatible** with your existing infrastructure:
 
 | Feature | Implementation | SSOT Integration |
-|---------|----------------|-----------------|
+| --- | --- | --- |
 | **Lineage tracking** | `train_data_hash` in metadata | ✅ SHA-256 of training data |
 | **Deterministic splits** | Fixed `seed=42` | ✅ Replay verified |
 | **Model versioning** | Timestamp + hash | ✅ Governance ledger ready |
@@ -268,7 +278,7 @@ metadata['storage_uri'] = f"ipfs://{model_cid}"
 
 ## File Tree (Final)
 
-```
+```text
 nord-rf-driver/
 ├── agent_rf_driver/
 │   ├── __init__.py              ✅
@@ -313,6 +323,7 @@ nord-rf-driver/
 ---
 
 **You now have a production-grade, contract-driven RF racing system** with:
+
 - ✅ Explicit data schemas
 - ✅ Minimal v1 state (13 features)
 - ✅ Training pipeline with lineage tracking

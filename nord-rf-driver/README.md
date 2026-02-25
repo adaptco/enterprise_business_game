@@ -20,7 +20,7 @@ python agent_rf_driver/run_rf_agent_lap.py --model-dir data/models
 
 ## Architecture
 
-```
+```text
 nord-rf-driver/
 ├── env/                        # Track geometry & physics
 ├── state/                      # Canonical state structures
@@ -45,6 +45,7 @@ nord-rf-driver/
 Every training row conforms to `data_collection/schema_training_sample.json`:
 
 **State features (13):**
+
 - `speed_mps`, `yaw_rate_rad_s`
 - `track_progress_m`, `distance_to_center_m`
 - `curvature_now_1pm`, `curvature_10m_ahead_1pm`, `curvature_30m_ahead_1pm`
@@ -53,11 +54,13 @@ Every training row conforms to `data_collection/schema_training_sample.json`:
 - `prev_steering_command`, `prev_throttle_command`, `prev_brake_command`
 
 **Action labels (3):**
+
 - `steering_command` (-1.0 to 1.0)
 - `throttle_command` (0.0 to 1.0)
 - `brake_command` (0.0 to 1.0)
 
 **Metadata:**
+
 - `session_id`, `lap_id`, `timestep`
 - `valid` (bool), `event` (string)
 
@@ -135,6 +138,7 @@ for tick in range(num_ticks):
 **File:** NDJSON or CSV with rows matching `schema_training_sample.json`
 
 **Example row:**
+
 ```json
 {
   "session_id": "expert_001",
@@ -161,7 +165,8 @@ for tick in range(num_ticks):
 ### Output Contract
 
 **Directory structure:**
-```
+
+```text
 data/models/
 ├── steering.joblib           # RF model for steering
 ├── throttle.joblib           # RF model for throttle
@@ -183,7 +188,8 @@ python training/train_random_forest.py \
 ```
 
 **Expected output:**
-```
+
+```text
 ✓ Loaded config: training/configs/rf_default.yaml
   - n_estimators: 100
   - max_depth: 18
@@ -228,38 +234,42 @@ python training/train_random_forest.py \
 
 **13 features** for fast iteration:
 
-| Feature | Type | Description |
-|---------|------|-------------|
-| `speed_mps` | float | Current speed (m/s) |
-| `yaw_rate_rad_s` | float | Angular velocity (rad/s) |
-| `track_progress_m` | float | Distance along centerline |
-| `distance_to_center_m` | float | Lateral offset (+ right, - left) |
-| `curvature_now_1pm` | float | Current curvature (1/m) |
-| `curvature_10m_ahead_1pm` | float | Curvature 10m ahead |
-| `curvature_30m_ahead_1pm` | float | Curvature 30m ahead |
-| `grad_now` | float | Track gradient (radians) |
-| `dist_left_edge_m` | float | Distance to left edge |
-| `dist_right_edge_m` | float | Distance to right edge |
-| `prev_steering_command` | float | Previous steering (smoothness) |
-| `prev_throttle_command` | float | Previous throttle |
-| `prev_brake_command` | float | Previous brake |
+| Feature                  | Type  | Description                           |
+|--------------------------|-------|---------------------------------------|
+| `speed_mps`              | float | Current speed (m/s)                   |
+| `yaw_rate_rad_s`         | float | Angular velocity (rad/s)              |
+| `track_progress_m`       | float | Distance along centerline             |
+| `distance_to_center_m`   | float | Lateral offset (+ right, - left)      |
+| `curvature_now_1pm`      | float | Current curvature (1/m)               |
+| `curvature_10m_ahead_1pm`| float | Curvature 10m ahead                   |
+| `curvature_30m_ahead_1pm`| float | Curvature 30m ahead                   |
+| `grad_now`               | float | Track gradient (radians)              |
+| `dist_left_edge_m`       | float | Distance to left edge                 |
+| `dist_right_edge_m`      | float | Distance to right edge                |
+| `prev_steering_command`  | float | Previous steering (smoothness)        |
+| `prev_throttle_command`  | float | Previous throttle                     |
+| `prev_brake_command`     | float | Previous brake                        |
 
 This is sufficient for **competent lap completion** on Nürburgring.
 
 ## Expansion Path
 
 ### v2: Add wheel dynamics
+
 - `wheel_speed_fl/fr/rl/rr`
 - `tire_slip_ratio_fl/fr/rl/rr`
 
 ### v3: Richer horizon
+
 - Curvature at ±50m, ±100m, ±200m
 - Elevation preview
 
 ### v4: Engine/transmission
+
 - `engine_rpm`, `gear`, `torque_nm`
 
 ### v5: Competitor awareness (multi-agent)
+
 - `opponent_distance_ahead`, `opponent_distance_behind`
 
 ## Integration with SSOT
@@ -273,7 +283,7 @@ This system is **compatible** with your existing governance infrastructure:
 
 ## Dependencies
 
-```
+```text
 numpy>=1.24
 pandas>=2.0
 scikit-learn>=1.3

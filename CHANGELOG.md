@@ -31,7 +31,7 @@ All notable changes to the Racing AI Simulator project.
 
 ## [0.2.0] - 2026-02-03
 
-### Added
+### Added (0.2.0)
 
 - **Tire degradation system** (SOFT/MEDIUM/HARD compounds)
 - **Fuel consumption** with mass penalty (2% at full load)
@@ -39,7 +39,7 @@ All notable changes to the Racing AI Simulator project.
 - **TireState, FuelState, WeatherState** dataclasses
 - **Pit stop mechanics** (`pit_stop()` instant, `trigger_pit_entry()` with timer)
 
-### Changed
+### Changed (0.2.0)
 
 - `DeterministicVehiclePhysics.step()` now incorporates tire wear (+0.0001/tick base)
 - `RacingSimulator.step()` updates weather and passes to physics
@@ -54,7 +54,7 @@ All notable changes to the Racing AI Simulator project.
 
 ## [0.1.0] - 2026-01-15
 
-### Added
+### Added (0.1.0)
 
 - Initial RacingSimulator with Nürburgring track
 - DeterministicVehiclePhysics with Olley RCVD model

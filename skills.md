@@ -13,7 +13,7 @@
 - Keep context small: summarize long instructions and avoid unnecessary reference chaining.
 - If a required skill file is missing or inaccessible, state the issue briefly and proceed with the best fallback workflow.
 
-## Production Release
+## For Skill Developers: Production Release Guide
 ### Required Artifacts
 - Updated `skills.md` with executable, imperative instructions.
 - Clean git diff scoped to requested changes.

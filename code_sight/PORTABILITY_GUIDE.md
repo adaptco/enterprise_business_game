@@ -42,7 +42,7 @@ python code_sight/demo_pinn_integration.py --mode first_light
 
 Expected output:
 
-```
+```text
 ✓ First Light sequence complete!
 Observability Summary:
   Total Observations: 142
@@ -226,7 +226,7 @@ with open("audit_trail.json", "w") as f:
 
 ## 🎯 Architecture Overview
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                  Agent Application Layer                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
@@ -278,7 +278,7 @@ with open("audit_trail.json", "w") as f:
 
 ## 📁 Bundle Contents
 
-```
+```text
 code_sight/
 ├── __init__.py                  # Package initialization
 ├── core.py                      # Main observability engine
@@ -370,4 +370,4 @@ For questions or issues:
 
 ---
 
-**Built with 🏎️ for the Agent Q Pedagogical Framework**
+## Built with 🏎️ for the Agent Q Pedagogical Framework

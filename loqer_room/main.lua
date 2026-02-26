@@ -1,7 +1,7 @@
 
 -- loqer_room/main.lua
--- The Loqer Room Engine Manifold
--- Abstraction: Optimus Prime as virtual avatar for multimodal embedding field
+-- Enterprise Business Game Engine
+-- Powered by the Loqer Room Manifold
 
 -- local json = require("json") -- Removed to use stub
 
@@ -9,7 +9,7 @@ local optimus = {}
 local tensor_slice = {}
 
 function love.load()
-    love.window.setTitle("Loqer Room - Optimus Prime Avatar")
+    love.window.setTitle("Enterprise Business Game")
     love.window.setMode(800, 600, {resizable=true})
     
     -- Load font

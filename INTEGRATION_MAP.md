@@ -5,7 +5,7 @@ This document shows how **all systems** connect through deterministic checkpoint
 ## System Inventory
 
 | System | Domain | Checkpoint Format | Replay Mechanism | IPFS Support |
-|--------|--------|-------------------|------------------|--------------|
+| -------- | -------- | ------------------- | ------------------ | -------------- |
 | **Enterprise Business Game** | Economic simulation | JSON (single file) | Manual state restoration | ✅ CIDv1 DAG-CBOR |
 | **Nürburgring AI Racing** | Racing simulation | NDJSON (telemetry) | Deterministic physics replay | ✅ Ready (needs bridge) |
 | **GT Racing '26 Replay Court** | Agent corridors | NDJSON (hash chain) | Agent decision replay | ⚠️ Not yet |
@@ -149,7 +149,7 @@ interface UnifiedCheckpoint {
 
 All checkpoints feed into a **single unified ledger**:
 
-```
+```text
 unified_governance_ledger.ndjson
 
 Entry 1 (Genesis):
@@ -263,7 +263,7 @@ assert replayed_corridor == training_corridor  # Exact match
 ## Verification Matrix
 
 | Property | Enterprise Game | Racing AI | Vector Store | Replay Court |
-|----------|----------------|-----------|--------------|--------------|
+| ---------- | ---------------- | ----------- | -------------- | -------------- |
 | **Deterministic RNG** | ✅ seed=42 | ✅ seed=42 | ✅ tie-breaking | ✅ seed in manifest |
 | **Fixed-step integration** | ✅ tick-based | ✅ 60Hz physics | ✅ query-by-query | ✅ step-by-step |
 | **Canonical hashing** | ✅ JCS | ✅ JCS | ✅ JCS | ✅ JCS |
@@ -298,21 +298,25 @@ open replay_viewer.html
 ## Why This Matters
 
 ### Audit-Grade Compliance
+
 - Every decision (company operation, AI steering input, vector query) is cryptographically sealed
 - Replay verification proves determinism
 - IPFS ensures immutability
 
 ### Cross-System Learning
+
 - Train AI on business game strategies
 - Use racing telemetry to improve physics models
 - Search historical decisions semantically
 
 ### Governance & Provenance
+
 - Track model versions through lineage hashes
 - Audit training data sources
 - Verify compliance with council approvals
 
 ### Future: Digital Twin Integration
+
 - Connect to physical metrology data
 - Real-world sensor inputs → simulator checkpoints
 - Hausdorff distance validation for geometric integrity
@@ -321,7 +325,7 @@ open replay_viewer.html
 
 ## File Structure (Complete System)
 
-```
+```text
 enterprise_business_game/
 ├── src/
 │   ├── game_engine.py                   # Business simulation core
@@ -347,6 +351,7 @@ enterprise_business_game/
 ## Next: Implement Unified Ledger
 
 Create `src/unified_ledger_adapter.py`:
+
 ```python
 from governance_ledger import GovernanceLedger
 

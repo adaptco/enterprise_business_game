@@ -1,9 +1,11 @@
 # IPFS Checkpoint Integration Guide
-**Connecting Deterministic Checkpoints to SSOT Architecture**
+
+Connecting Deterministic Checkpoints to SSOT Architecture
 
 ## Overview
 
 This guide shows how the IPFS-backed checkpoint system integrates with:
+
 1. **Unified Agent Runtime** — Deterministic agent execution & seeding
 2. **Governance Ledger** — SSOT lineage tracking & Merkle chains
 3. **Corridor Replay** — Audit-grade replay verification
@@ -140,6 +142,7 @@ class UnifiedAgentRuntime:
 ```
 
 **Key Integration Points:**
+
 - ✅ Agent ID derived from UUIDv5 (deterministic namespace)
 - ✅ RNG seed from sovereign signature (reproducible)
 - ✅ IPFS CID recorded for corridor checkpoint
@@ -149,11 +152,12 @@ class UnifiedAgentRuntime:
 
 ## 2. Governance Ledger Integration
 
-### Current Implementation
+### Current Implementation (Governance)
 
 From `audit_determinism.py` lines 90-156:
 
 The audit script verifies:
+
 1. **CID integrity** — Hash matches content
 2. **Merkle chain linkage** — `prev_checkpoint_cid` links valid
 3. **Canonical hashing** — JCS-compliant ordered serialization
@@ -274,6 +278,7 @@ class GovernanceLedger:
 ```
 
 **SSOT Compliance:**
+
 - ✅ Append-only ledger (no mutations)
 - ✅ Merkle chain linkage (previousHash → hash)
 - ✅ Canonical hashing (JCS ordered keys)
@@ -284,11 +289,12 @@ class GovernanceLedger:
 
 ## 3. Corridor Replay Integration
 
-### Current Implementation
+### Current Implementation (Replay)
 
 From `demo_checkpoint.py` lines 146-248:
 
 The replay demo shows:
+
 1. **State capture** at tick 5
 2. **Continuation** to tick 10
 3. **Replay from checkpoint** to verify determinism
@@ -387,6 +393,7 @@ class CorridorReplayVerifier:
 ```
 
 **Replay Guarantees:**
+
 - ✅ Checkpoint loaded from CID (immutable artifact)
 - ✅ Operations replayed in order
 - ✅ State hash verified (byte-for-byte determinism)
@@ -482,7 +489,8 @@ print(f"  - Operations replayed: {replay_result['operations_replayed']}")
 ```
 
 **Output:**
-```
+
+```text
 ✓ Corridor executed
   - Checkpoint CID: bafybeihqn6iblmvk...
   - Lineage Root: 7f3a9c2d1e8b5a...
@@ -499,14 +507,15 @@ print(f"  - Operations replayed: {replay_result['operations_replayed']}")
 
 ## 5. Compatibility Matrix
 
-| Component | Format | Hash Algorithm | Chain Linkage | IPFS Support |
-|-----------|--------|----------------|---------------|--------------|
-| **Enterprise Business Game** | JSON (single file) | SHA-256 | Merkle proof object | ✅ CIDv1 (DAG-CBOR) |
-| **GT Racing '26 Replay Court** | NDJSON (append-only) | SHA-256 | previousHash field | ⚠️ Not yet implemented |
-| **Hamiltonian LoRA Training** | NDJSON (append-only) | SHA-256 | previousHash field | ⚠️ Not yet implemented |
-| **Governance Ledger** | NDJSON (append-only) | SHA-256 (JCS) | previousHash field | ✅ Embedded CID field |
+| Component                      | Format                 | Hash Algorithm   | Chain Linkage           | IPFS Support                |
+|--------------------------------|------------------------|------------------|-------------------------|-----------------------------|
+| **Enterprise Business Game**   | JSON (single file)     | SHA-256          | Merkle proof object     | ✅ CIDv1 (DAG-CBOR)        |
+| **GT Racing '26 Replay Court** | NDJSON (append-only)   | SHA-256          | previousHash field      | ⚠️ Not yet implemented     |
+| **Hamiltonian LoRA Training**  | NDJSON (append-only)   | SHA-256          | previousHash field      | ⚠️ Not yet implemented     |
+| **Governance Ledger**          | NDJSON (append-only)   | SHA-256 (JCS)    | previousHash field      | ✅ Embedded CID field       |
 
 **Migration Path:**
+
 - All systems use SHA-256 (compatible)
 - NDJSON format is subset of checkpoint payload
 - IPFS CID can be added to existing NDJSON entries

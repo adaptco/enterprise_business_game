@@ -9,13 +9,14 @@
 
 ## Cryptographic Proof
 
-```
+```text
 Genesis Hash:  genesis_ee6aa76e
 Terminal Hash: 774bab48
 Chain Linkage: ✓ All 300 entries correctly linked
 ```
 
 **This proves:**
+
 - ✅ **Determinism**: Same seed → same hash sequence
 - ✅ **Tamper-Evidence**: Any change breaks the chain  
 - ✅ **Verifiability**: Anyone can re-run and get `774bab48`
@@ -24,10 +25,10 @@ Chain Linkage: ✓ All 300 entries correctly linked
 
 ## Race Results
 
-| Vehicle | Distance | Velocity | Position |
-|---------|----------|----------|----------|
-| car_1 🥇 | 129.1m | 25.9 m/s | Winner |
-| car_2 🥈 | 112.6m | 22.6 m/s | Runner-up |
+| Vehicle  | Distance | Velocity | Position  |
+|----------|----------|----------|-----------|
+| car_1 🥇 | 129.1m   | 25.9 m/s | Winner    |
+| car_2 🥈 | 112.6m   | 22.6 m/s | Runner-up |
 
 **Duration:** 300 ticks (5.0 seconds @ 60Hz)  
 **Track:** Circular (50m radius)
@@ -37,12 +38,14 @@ Chain Linkage: ✓ All 300 entries correctly linked
 ## Verification Commands
 
 ### Basic Verification
+
 ```bash
 python verify_gt_racing_ledger.py sim_log.jsonl
 ```
 
 ### Expected Output
-```
+
+```text
 ✅ LEDGER VERIFICATION: PASSED
    Genesis: genesis_ee6aa76e
    Terminal: 774bab48
@@ -73,6 +76,7 @@ The `sim_log.jsonl` can be loaded directly into [`replay_viewer.html`](file:///C
 4. Use playback controls to step through the race
 
 **Visualized Data:**
+
 - Side-by-side comparison of consecutive ticks
 - Hash chain linkage (genesis → terminal)
 - Vehicle positions (x, y, heading, velocity)
@@ -123,24 +127,26 @@ for tick in checkpoints:
 
 ## Files Generated
 
-| File | Purpose | Size |
-|------|---------|------|
-| `sim_log.jsonl` | Full race ledger | ~125 KB |
-| `verification_report.json` | Verification results | ~250 B |
-| `verify_gt_racing_ledger.py` | Verification script | ~7 KB |
+| File                         | Purpose               | Size     |
+|------------------------------|-----------------------|----------|
+| `sim_log.jsonl`              | Full race ledger      | ~125 KB  |
+| `verification_report.json`   | Verification results  | ~250 B   |
+| `verify_gt_racing_ledger.py` | Verification script   | ~7 KB    |
 
 ---
 
 ## Deterministic Guarantees
 
-**Input:** 
+**Input:**
+
 - Seed: `42` (fixed)
 - Track: Circular, 50m radius
 - Vehicles: `car_1` (25.9 m/s), `car_2` (22.6 m/s)
 - Duration: 300 ticks @ 60Hz
 
 **Output (Always):**
-```
+
+```text
 Terminal Hash: 774bab48
 car_1 Position: 129.1m
 car_2 Position: 112.6m
@@ -153,6 +159,7 @@ car_2 Position: 112.6m
 ## Audit Trail
 
 This ledger can serve as a **canonical reference** for:
+
 - Physics engine regression testing
 - Determinism validation across runtimes
 - Replay verification in competitions
